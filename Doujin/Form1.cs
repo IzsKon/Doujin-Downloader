@@ -13,34 +13,64 @@ using System.Threading;
 
 namespace Doujin
 {
-    public partial class Form1 : Form
-    {
-        private bool selected = false;
+	public partial class Form1 : Form
+	{
+		private bool selected = false;
+		private LinkedList<Form2> downloadPages = new LinkedList<Form2>();
+		private int currentDownload = 0;
+		private const int maxDownload = 3;
 
-        public Form1()
-        {
-            InitializeComponent();
-            magicNumber.Focus();
-        }
+		public Form1()
+		{
+			InitializeComponent();
+			magicNumber.Focus();
+		}
 
-        private void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                e.Handled = true;
-            if (e.KeyChar == (char)13)
-            {
-                selected = true;
-                magicNumber.SelectAll();
-                Form2 downloadPage = new Form2(magicNumber.Text);
-                downloadPage.Show();
-            }
-        }
+		private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+				e.Handled = true;
+			if (e.KeyChar == (char)13)
+			{
+				selected = true;
+				magicNumber.SelectAll();
 
-        private void magicNumber_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (!selected) magicNumber.SelectAll();
-            else magicNumber.DeselectAll();
-            selected = !selected;
-        }
-    }
+				// set up download page
+				var downloadPage = new Form2(magicNumber.Text);
+				downloadPage.checkMaxReached = () =>
+				{
+					return currentDownload >= maxDownload;
+				};
+				downloadPage.startDownloadEvent += (sen, eve) =>
+				{
+					currentDownload++;
+				};
+				downloadPage.finishEvent += (sen, eve) =>
+				{
+					currentDownload--;
+					downloadPages.Remove(downloadPage);
+				};
+				// add to list
+				downloadPages.AddLast(downloadPage);
+
+				// set up task
+				var mainTask = new Task(() =>
+				{
+					downloadPage.load();
+				});
+				mainTask.Start();
+				await mainTask; // asynchronouly wait page to load
+
+				// finish loading, show page
+				downloadPage.Show();
+			}
+		}
+
+		private void magicNumber_MouseDown(object sender, MouseEventArgs e)
+		{
+			if (!selected) magicNumber.SelectAll();
+			else magicNumber.DeselectAll();
+			selected = !selected;
+		}
+	}
 }
