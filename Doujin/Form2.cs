@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Net;
 using System.IO;
 using System.Threading;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Doujin
 {
@@ -21,11 +22,16 @@ namespace Doujin
 		private string magicNumber = "";
 		private int length = 0;
 		private CancellationTokenSource tokenSource;
+		private CommonOpenFileDialog dialog;
+		private string title;
 
 		public Form2(string num)
 		{
 			InitializeComponent();
 			magicNumber = num;
+
+			dialog = new CommonOpenFileDialog();
+			dialog.IsFolderPicker = true;
 		}
 
 		public void load()
@@ -50,8 +56,7 @@ namespace Doujin
 			//doujin title//
 			int titleStart = page.IndexOf("<h2>") + "<h2>".Length;
 			int titleLength = page.IndexOf("</h2>") - titleStart;
-			string title = page.Substring(titleStart, titleLength);
-			saveFileDialog1.FileName = title;
+			title = page.Substring(titleStart, titleLength);
 			infoTitle.Text = title;
 
 			//doujin length//
@@ -126,12 +131,20 @@ namespace Doujin
 					"You Sick Pervert!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return;
 			}
-			if (saveFileDialog1.ShowDialog() != DialogResult.OK)
+			if (dialog.ShowDialog() != CommonFileDialogResult.Ok)
 				return;
 
-			path = saveFileDialog1.FileName;
+			path = dialog.FileName + "\\" + title;
 			System.Diagnostics.Debug.WriteLine(path);
-			Directory.CreateDirectory(path);
+			if (Directory.Exists(path))
+			{
+				var result = MessageBox.Show("Folder already exist!\nReplace Folder?", "Folder already exist!",
+											 MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+				if (result == DialogResult.No)
+					return;
+			}
+			else
+				Directory.CreateDirectory(path);
 
 			// disable download button
 			download.Enabled = false;
