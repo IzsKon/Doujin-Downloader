@@ -23,7 +23,7 @@ namespace Doujin
 		private int length = 0;
 		private CancellationTokenSource tokenSource;
 		private CommonOpenFileDialog dialog;
-		private string title;
+		private string title = "";
 
 		public Form2(string num)
 		{
@@ -36,7 +36,7 @@ namespace Doujin
 
 		public void load()
 		{
-			//doujin page//
+			// doujin page
 			WebRequest myRequest;
 			string page = "";
 			try
@@ -53,19 +53,19 @@ namespace Doujin
 				return;
 			}
 
-			//doujin title//
+			// doujin title
 			int titleStart = page.IndexOf("<h2>") + "<h2>".Length;
 			int titleLength = page.IndexOf("</h2>") - titleStart;
 			title = page.Substring(titleStart, titleLength);
 			infoTitle.Text = title;
 
-			//doujin length//
+			// doujin length
 			int lengthStart = page.IndexOf("<div>") + "<div>".Length;
 			int lengthLength = page.IndexOf(" pages</div>") - lengthStart;
 			length = int.Parse(page.Substring(lengthStart, lengthLength));
 			infoPage.Text = length.ToString() + " pages";
 
-			//doujin image//
+			// doujin image
 			page = page.Substring(page.IndexOf("<meta itemprop=\"image\" content=\"") + "<meta itemprop=\"image\" content=\"".Length);
 			page = page.Substring(0, page.IndexOf("\""));
 			myRequest = WebRequest.Create(@page);
@@ -76,29 +76,50 @@ namespace Doujin
 
 		private void downloadDoujin(string path, CancellationToken cts)
 		{
-			//download//
-			WebRequest myRequest;
+			WebRequest hentaiPage;
 			Random ran = new Random(int.Parse(magicNumber));
-			string page = "";
+			string imageLink = "";
 			for (int i = 1; i <= length; i++)
 			{
-				if (cts.IsCancellationRequested) // if task is ordered to cancel
-					return;
-				Thread.Sleep(ran.Next(500, 1000));// !! DOWNLOAD DELAY !! //
-				try
+                // if task is ordered to cancel
+                if (cts.IsCancellationRequested) return;
+
+                //download delay. DO NOT REMOVE!!
+                Thread.Sleep(ran.Next(500, 1000));
+
+                // go to the hentai page
+                try
 				{
-					myRequest = WebRequest.Create(@"https://nhentai.net/g/" + magicNumber + "/" + i.ToString() + "/");
-					myRequest.Timeout = 10000;
-					myRequest.Method = "GET";
-					page = new StreamReader(myRequest.GetResponse().GetResponseStream()).ReadToEnd();
+					hentaiPage = WebRequest.Create(@"https://nhentai.net/g/" + magicNumber + "/" + i.ToString());
+					hentaiPage.Timeout = 10000;
+					hentaiPage.Method = "GET";
+					imageLink = new StreamReader(hentaiPage.GetResponse().GetResponseStream()).ReadToEnd();
 				}
 				catch (WebException) { break; }
 
-				page = page.Substring(page.LastIndexOf("<img src=\"") + "<img src = ".Length - 1);
-				page = page.Substring(0, page.IndexOf("\""));
+                // find the image link
+				imageLink = imageLink.Substring(imageLink.LastIndexOf("<img src=\"") + "<img src = ".Length - 1);
+				imageLink = imageLink.Substring(0, imageLink.IndexOf("\""));
 
-				WebClient mywebclient = new WebClient();
-				mywebclient.DownloadFile(page, path + "\\" + i.ToString() + ".jpg");
+                // download image
+                try
+                {
+                    WebClient mywebclient = new WebClient();
+                    mywebclient.DownloadFile(imageLink, path + "\\" + i.ToString() + ".jpg");
+                }
+                catch (WebException)
+                {
+                    var result = MessageBox.Show("We have problem downloading " + magicNumber + ", page" + i.ToString(), 
+                        "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                    // retry?
+                    if (result == DialogResult.Retry)
+                    {
+                        --i;
+                        continue;
+                    }
+                    else return;
+                }
 
 				try
 				{

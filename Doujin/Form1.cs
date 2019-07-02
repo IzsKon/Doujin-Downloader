@@ -56,13 +56,17 @@ namespace Doujin
 				// set up task
 				var mainTask = new Task(() =>
 				{
-					downloadPage.load();
+                    downloadPage.load();
 				});
 				mainTask.Start();
 				await mainTask; // asynchronouly wait page to load
 
-				// finish loading, show page
-				downloadPage.Show();
+                // finish loading, show page
+                try
+                {
+				    downloadPage.Show();
+                }
+                catch(System.ObjectDisposedException){}
 			}
 		}
 
