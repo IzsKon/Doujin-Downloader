@@ -18,12 +18,12 @@ namespace Doujin
     {
         private string doujinTitle = "";
         private int doujinLen = 0;
-        private int buttonNum = 0;
         private CommonOpenFileDialog folderSelectDialog;
         private bool selected = false;
 
-        public class DownloadInfo
+        public class DownloadTask
         {
+            public Task downloadTask;
             public CancellationTokenSource cts;
             public int doujinLen;
             public string magicNum;
@@ -33,7 +33,8 @@ namespace Doujin
             public Button cancelButton;
         }
 
-        private LinkedList<Task> downloadTaskManager = new LinkedList<Task>();
+        private LinkedList<DownloadTask> downloadTaskManager = new LinkedList<DownloadTask>();
+        //private LinkedList<Task> downloadTaskManager = new LinkedList<Task>();
 
         public Form1()
         {
@@ -88,7 +89,7 @@ namespace Doujin
             catch
             {
                 MessageBox.Show(
-                    "Cannot find page.\nPlease check your Internet and make sure the number you enter is valid.",
+                    "Cannot find page.\nPlease check your Internet connection and make sure the number you enter is valid.",
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error );
                 return;
             }
@@ -130,6 +131,17 @@ namespace Doujin
 
         private async void downloadButton_Click(object sender, EventArgs e)
         {
+            // check if task alreasdy existed
+            foreach(DownloadTask temp in downloadTaskManager)
+            {
+                if (temp.magicNum == magicNumTextBox.Text)
+                {
+                    MessageBox.Show(temp.magicNum + " is already waiting to download", "Download Already Existed",
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+            }
+
             // create folder
             string path = "";
 
@@ -137,8 +149,8 @@ namespace Doujin
             path = folderSelectDialog.FileName + "\\" + doujinTitle;
             if (Directory.Exists(path))
             {
-                var result = MessageBox.Show("Folder already exist!\nReplace Folder?", "Folder already exist!",
-                                             MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                var result = MessageBox.Show("Folder already existed!\nDo you want to replace the folder?", "Folder Already Exist!",
+                                             MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
             }
             else Directory.CreateDirectory(path);
@@ -146,83 +158,26 @@ namespace Doujin
             // disable download button
             //downloadButton.Enabled = false;
 
-            buttonNum++;
-
-            DownloadInfo di = new DownloadInfo();
-            di.magicNum = magicNumTextBox.Text;
-            di.doujinLen = doujinLen;
-            di.path = path;
-
-            // set this task cancellable
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            di.cts = tokenSource;
-
-            Label title = new Label();
-            this.Controls.Add(title);
-            // title.Location = new Point(426, 16 + 25 * downloadTaskManager.Count);
-            // title.Size = new Size(416, 23);
-            title.Location = new Point(270, 25 * buttonNum);
-            title.Size = new Size(350, 23);
-            title.ForeColor = Color.White;
-            title.BackColor = Color.Gray;
-            title.Text = doujinTitle;
-            title.TextAlign = ContentAlignment.MiddleLeft;
-            di.doujinTitle = title;
-
-            Label progress = new Label();
-            this.Controls.Add(progress);
-            // page.Location = new Point(848, 16 + 25 * downloadTaskManager.Count);
-            // page.Size = new Size(75, 23);
-            progress.Location = new Point(620, 25 * buttonNum);
-            progress.Size = new Size(55, 23);
-            progress.Text = "waiting...";
-            progress.TextAlign = ContentAlignment.MiddleCenter;
-            progress.ForeColor = Color.White;
-            di.pageProgress = progress;
-
-            Button cancel = new Button();
-            this.Controls.Add(cancel);
-            // cancel.Location = new Point(919, 16 + 25 * downloadTaskManager.Count);
-            // cancel.Size = new Size(23, 23);
-            cancel.Location = new Point(675, 25 * buttonNum);
-            cancel.Size = new Size(23, 23);
-            cancel.TabStop = false;
-            cancel.FlatStyle = FlatStyle.Flat;
-            cancel.FlatAppearance.BorderSize = 0;
-            cancel.Text = "X";
-            cancel.ForeColor = Color.White;
-            cancel.BackColor = Color.DarkRed;
-            cancel.Click += (sen, eve) =>
-            {
-                tokenSource.Cancel();
-                progress.Text = "cancled";
-                progress.ForeColor = Color.Gray;
-            };
-            di.cancelButton = cancel;
-
-            Task downloadTask = new Task(() =>
-            {
-                downloadDoujin(di);
-            });
-
-            downloadTaskManager.AddLast(downloadTask);
+            DownloadTask dt = newDownloadTask(path);
+            downloadTaskManager.AddLast(dt);
             if (downloadTaskManager.Count == 1)
             {
-                downloadTask.Start();
-                await downloadTask;
+                dt.downloadTask.Start();
+                await dt.downloadTask;
             }
 
         }
 
-        private async void downloadDoujin(DownloadInfo di)
+        private async void downloadDoujin()
         {
+            DownloadTask dt = downloadTaskManager.ElementAt(0);
             WebRequest doujinPage;
             Random ran = new Random(int.Parse(magicNumTextBox.Text));
             string imageLink = "";
-            for (int i = 1; i <= di.doujinLen; i++)
+            for (int page = 1; page <= dt.doujinLen; page++)
             {
                 // if task is ordered to cancel
-                if (di.cts.IsCancellationRequested) break;
+                if (dt.cts.IsCancellationRequested) break;
 
                 //download delay. DO NOT REMOVE!!
                 Thread.Sleep(ran.Next(500, 1000));
@@ -230,7 +185,7 @@ namespace Doujin
                 // go to the hentai page
                 try
                 {
-                    doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + di.magicNum + "/" + i.ToString());
+                    doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + dt.magicNum + "/" + page.ToString());
                     doujinPage.Timeout = 10000;
                     doujinPage.Method = "GET";
                     imageLink = new StreamReader(doujinPage.GetResponse().GetResponseStream()).ReadToEnd();
@@ -245,48 +200,142 @@ namespace Doujin
                 try
                 {
                     WebClient mywebclient = new WebClient();
-                    mywebclient.DownloadFile(imageLink, di.path + "\\" + i.ToString() + ".jpg");
-                    if (di.cts.IsCancellationRequested) break;
-                    di.pageProgress.Invoke((Action)(() =>
+                    mywebclient.DownloadFile(imageLink, dt.path + "\\" + page.ToString() + ".jpg");
+
+                    // if task is ordered to cancel
+                    if (dt.cts.IsCancellationRequested) break;
+
+                    dt.pageProgress.Invoke((Action)(() =>
                     {
-                        di.pageProgress.Text = i.ToString() + "/" + di.doujinLen.ToString();
+                        dt.pageProgress.Text = page.ToString() + "/" + dt.doujinLen.ToString();
                     }));
                     
                 }
                 catch (WebException)
                 {
-                    var result = MessageBox.Show("We have problem downloading " + di.magicNum + ", page" + i.ToString(),
+                    var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
                         "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
                     // retry?
                     if (result == DialogResult.Retry)
                     {
-                        --i;
+                        --page;
                         continue;
                     }
                     else return;
                 }
             }
 
+            this.Invoke((Action)(() =>
+            {
+                this.Controls.Remove(dt.doujinTitle);
+                this.Controls.Remove(dt.pageProgress);
+                this.Controls.Remove(dt.cancelButton);
+            }));
             downloadTaskManager.RemoveFirst();
 
-            if (!di.cts.IsCancellationRequested)
+            // move all download tasks above
+            foreach(DownloadTask temp in downloadTaskManager)
             {
-                this.Invoke((Action)(() =>
+                try
                 {
-                    this.Controls.Remove(di.doujinTitle);
-                    this.Controls.Remove(di.pageProgress);
-                    this.Controls.Remove(di.cancelButton);
+                    temp.doujinTitle.Invoke((Action)(() =>
+                    {
+                        temp.doujinTitle.Location = new Point(temp.doujinTitle.Location.X, temp.doujinTitle.Location.Y - 25);
+                    }));
+
+                    temp.pageProgress.Invoke((Action)(() =>
+                    {
+                        temp.pageProgress.Location = new Point(temp.pageProgress.Location.X, temp.pageProgress.Location.Y - 25);
+                    }));
+
+                    temp.cancelButton.Invoke((Action)(() =>
+                    {
+                        temp.cancelButton.Location = new Point(temp.cancelButton.Location.X, temp.cancelButton.Location.Y - 25);
+                    }));
                 }
-                ));
+                catch { };
+                
             }
 
             // download next doujin
-            if(downloadTaskManager.Count > 0)
+            if (downloadTaskManager.Count > 0)
             {
-                downloadTaskManager.ElementAt(0).Start();
-                await downloadTaskManager.ElementAt(0);
+                downloadTaskManager.ElementAt(0).downloadTask.Start();
+                await downloadTaskManager.ElementAt(0).downloadTask;
             }
+        }
+
+        private DownloadTask newDownloadTask(string path)
+        {
+            DownloadTask dt = new DownloadTask();
+
+            // download task
+            dt.downloadTask = new Task(() =>
+            {
+                downloadDoujin();
+            });
+
+            // magic number
+            dt.magicNum = magicNumTextBox.Text;
+
+            // doujin length
+            dt.doujinLen = doujinLen;
+
+            // download path
+            dt.path = path;
+
+            // set this task cancellable
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            dt.cts = tokenSource;
+
+            // doujin title
+            Label title = new Label();
+            this.Controls.Add(title);
+            //title.Location = new Point(426, 16 + 25 * downloadTaskManager.Count);
+            //title.Size = new Size(416, 23);
+            title.Location = new Point(270, 25 + 25 * downloadTaskManager.Count);
+            title.Size = new Size(350, 23);
+            title.ForeColor = Color.White;
+            title.BackColor = Color.Gray;
+            title.Text = doujinTitle;
+            title.TextAlign = ContentAlignment.MiddleLeft;
+            dt.doujinTitle = title;
+
+            // page progress
+            Label progress = new Label();
+            this.Controls.Add(progress);
+            //page.Location = new Point(848, 16 + 25 * downloadTaskManager.Count);
+            //page.Size = new Size(75, 23);
+            progress.Location = new Point(620, 25 + 25 * downloadTaskManager.Count);
+            progress.Size = new Size(55, 23);
+            progress.Text = "waiting...";
+            progress.TextAlign = ContentAlignment.MiddleCenter;
+            progress.ForeColor = Color.White;
+            dt.pageProgress = progress;
+
+            // cancel button
+            Button cancel = new Button();
+            this.Controls.Add(cancel);
+            //cancel.Location = new Point(919, 16 + 25 * downloadTaskManager.Count);
+            //cancel.Size = new Size(23, 23);
+            cancel.Location = new Point(675, 25 + 25 * downloadTaskManager.Count);
+            cancel.Size = new Size(23, 23);
+            cancel.TabStop = false;
+            cancel.FlatStyle = FlatStyle.Flat;
+            cancel.FlatAppearance.BorderSize = 0;
+            cancel.Text = "X";
+            cancel.ForeColor = Color.White;
+            cancel.BackColor = Color.DarkRed;
+            cancel.Click += (sen, eve) =>
+            {
+                tokenSource.Cancel();
+                progress.Text = "cancled";
+                progress.ForeColor = Color.Gray;
+            };
+            dt.cancelButton = cancel;
+
+            return dt;
         }
 
     }
