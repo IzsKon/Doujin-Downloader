@@ -18,19 +18,32 @@ namespace Doujin
     {
         private string doujinTitle = "";
         private int doujinLen = 0;
+        private int buttonNum = 0;
         private CommonOpenFileDialog folderSelectDialog;
-        private CancellationTokenSource tokenSource;
-
         private bool selected = false;
-        private LinkedList<Task> downloadTasks = new LinkedList<Task>();
+
+        public class DownloadInfo
+        {
+            public CancellationTokenSource cts;
+            public int doujinLen;
+            public string magicNum;
+            public string path;
+            public Label doujinTitle;
+            public Label pageProgress;
+            public Button cancelButton;
+        }
+
+        private LinkedList<Task> downloadTaskManager = new LinkedList<Task>();
 
         public Form1()
         {
             InitializeComponent();
             magicNumTextBox.Focus();
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
 
             folderSelectDialog = new CommonOpenFileDialog();
-            folderSelectDialog.IsFolderPicker = true;
+            folderSelectDialog.IsFolderPicker = true;           
         }
 
         private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -82,34 +95,29 @@ namespace Doujin
 
             try
             {
-                // doujin title
-                doujinTitleLabel.Invoke((Action)(() =>
+                doujinInfoPanel.Invoke((Action)(() =>
                 {
+                    // doujin title
                     int titleStart = doujinPage.IndexOf("<h2>") + "<h2>".Length;
                     int titleLength = doujinPage.IndexOf("</h2>") - titleStart;
                     doujinTitle = doujinPage.Substring(titleStart, titleLength);
                     doujinTitleLabel.Text = doujinTitle;
-                }));
 
-                // doujin length
-                doujinLenLabel.Invoke((Action)(() =>
-                {
+                    // doujin length
                     int lengthStart = doujinPage.IndexOf("<div>") + "<div>".Length;
                     int lengthLength = doujinPage.IndexOf(" pages</div>") - lengthStart;
                     doujinLen = int.Parse(doujinPage.Substring(lengthStart, lengthLength));
                     doujinLenLabel.Text = doujinLen.ToString() + " pages";
-                }));
 
-                // doujin cover
-                doujinCoverPic.Invoke((Action)(() =>
-                {
+                    // doujin cover
                     doujinPage = doujinPage.Substring(doujinPage.IndexOf("<meta itemprop=\"image\" content=\"") + "<meta itemprop=\"image\" content=\"".Length);
                     doujinPage = doujinPage.Substring(0, doujinPage.IndexOf("\""));
                     doujinPageRequest = WebRequest.Create(doujinPage);
                     doujinPageRequest.Timeout = 10000;
                     doujinPageRequest.Method = "GET";
                     doujinCoverPic.Image = Image.FromStream(doujinPageRequest.GetResponse().GetResponseStream());
-                }));
+                }
+                ));
             }
             catch (InvalidOperationException)
             {
@@ -124,9 +132,9 @@ namespace Doujin
         {
             // create folder
             string path = "";
+
             if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
             path = folderSelectDialog.FileName + "\\" + doujinTitle;
-            System.Diagnostics.Debug.WriteLine(path);
             if (Directory.Exists(path))
             {
                 var result = MessageBox.Show("Folder already exist!\nReplace Folder?", "Folder already exist!",
@@ -138,36 +146,83 @@ namespace Doujin
             // disable download button
             //downloadButton.Enabled = false;
 
-            // emit start event
-            //startDownloadEvent?.Invoke(null, null);
+            buttonNum++;
+
+            DownloadInfo di = new DownloadInfo();
+            di.magicNum = magicNumTextBox.Text;
+            di.doujinLen = doujinLen;
+            di.path = path;
 
             // set this task cancellable
-            tokenSource = new CancellationTokenSource();
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            di.cts = tokenSource;
+
+            Label title = new Label();
+            this.Controls.Add(title);
+            // title.Location = new Point(426, 16 + 25 * downloadTaskManager.Count);
+            // title.Size = new Size(416, 23);
+            title.Location = new Point(270, 25 * buttonNum);
+            title.Size = new Size(350, 23);
+            title.ForeColor = Color.White;
+            title.BackColor = Color.Gray;
+            title.Text = doujinTitle;
+            title.TextAlign = ContentAlignment.MiddleLeft;
+            di.doujinTitle = title;
+
+            Label progress = new Label();
+            this.Controls.Add(progress);
+            // page.Location = new Point(848, 16 + 25 * downloadTaskManager.Count);
+            // page.Size = new Size(75, 23);
+            progress.Location = new Point(620, 25 * buttonNum);
+            progress.Size = new Size(55, 23);
+            progress.Text = "waiting...";
+            progress.TextAlign = ContentAlignment.MiddleCenter;
+            progress.ForeColor = Color.White;
+            di.pageProgress = progress;
+
+            Button cancel = new Button();
+            this.Controls.Add(cancel);
+            // cancel.Location = new Point(919, 16 + 25 * downloadTaskManager.Count);
+            // cancel.Size = new Size(23, 23);
+            cancel.Location = new Point(675, 25 * buttonNum);
+            cancel.Size = new Size(23, 23);
+            cancel.TabStop = false;
+            cancel.FlatStyle = FlatStyle.Flat;
+            cancel.FlatAppearance.BorderSize = 0;
+            cancel.Text = "X";
+            cancel.ForeColor = Color.White;
+            cancel.BackColor = Color.DarkRed;
+            cancel.Click += (sen, eve) =>
+            {
+                tokenSource.Cancel();
+                progress.Text = "cancled";
+                progress.ForeColor = Color.Gray;
+            };
+            di.cancelButton = cancel;
+
             Task downloadTask = new Task(() =>
             {
-                downloadDoujin(path, tokenSource.Token, magicNumTextBox.Text);
+                downloadDoujin(di);
             });
-            downloadTasks.AddLast(downloadTask);
-            if(downloadTasks.Count == 1)
+
+            downloadTaskManager.AddLast(downloadTask);
+            if (downloadTaskManager.Count == 1)
             {
                 downloadTask.Start();
                 await downloadTask;
             }
 
-            // canceled?
-            if (tokenSource.IsCancellationRequested)
-                MessageBox.Show("Download canceled", "Notation", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
-        private async void downloadDoujin(string path, CancellationToken cts, string magicNum)
+        private async void downloadDoujin(DownloadInfo di)
         {
-            WebRequest hentaiPage;
+            WebRequest doujinPage;
             Random ran = new Random(int.Parse(magicNumTextBox.Text));
             string imageLink = "";
-            for (int i = 1; i <= doujinLen; i++)
+            for (int i = 1; i <= di.doujinLen; i++)
             {
                 // if task is ordered to cancel
-                if (cts.IsCancellationRequested) return;
+                if (di.cts.IsCancellationRequested) break;
 
                 //download delay. DO NOT REMOVE!!
                 Thread.Sleep(ran.Next(500, 1000));
@@ -175,10 +230,10 @@ namespace Doujin
                 // go to the hentai page
                 try
                 {
-                    hentaiPage = WebRequest.Create(@"https://nhentai.net/g/" + magicNum + "/" + i.ToString());
-                    hentaiPage.Timeout = 10000;
-                    hentaiPage.Method = "GET";
-                    imageLink = new StreamReader(hentaiPage.GetResponse().GetResponseStream()).ReadToEnd();
+                    doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + di.magicNum + "/" + i.ToString());
+                    doujinPage.Timeout = 10000;
+                    doujinPage.Method = "GET";
+                    imageLink = new StreamReader(doujinPage.GetResponse().GetResponseStream()).ReadToEnd();
                 }
                 catch (WebException) { break; }
 
@@ -190,11 +245,17 @@ namespace Doujin
                 try
                 {
                     WebClient mywebclient = new WebClient();
-                    mywebclient.DownloadFile(imageLink, path + "\\" + i.ToString() + ".jpg");
+                    mywebclient.DownloadFile(imageLink, di.path + "\\" + i.ToString() + ".jpg");
+                    if (di.cts.IsCancellationRequested) break;
+                    di.pageProgress.Invoke((Action)(() =>
+                    {
+                        di.pageProgress.Text = i.ToString() + "/" + di.doujinLen.ToString();
+                    }));
+                    
                 }
                 catch (WebException)
                 {
-                    var result = MessageBox.Show("We have problem downloading " + magicNum + ", page" + i.ToString(),
+                    var result = MessageBox.Show("We have problem downloading " + di.magicNum + ", page" + i.ToString(),
                         "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
                     // retry?
@@ -206,13 +267,25 @@ namespace Doujin
                     else return;
                 }
             }
-            downloadTasks.RemoveFirst();
+
+            downloadTaskManager.RemoveFirst();
+
+            if (!di.cts.IsCancellationRequested)
+            {
+                this.Invoke((Action)(() =>
+                {
+                    this.Controls.Remove(di.doujinTitle);
+                    this.Controls.Remove(di.pageProgress);
+                    this.Controls.Remove(di.cancelButton);
+                }
+                ));
+            }
 
             // download next doujin
-            if(downloadTasks.Count >= 0)
+            if(downloadTaskManager.Count > 0)
             {
-                downloadTasks.ElementAt(0).Start();
-                await downloadTasks.ElementAt(0);
+                downloadTaskManager.ElementAt(0).Start();
+                await downloadTaskManager.ElementAt(0);
             }
         }
 
