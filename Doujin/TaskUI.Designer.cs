@@ -73,68 +73,69 @@ namespace Doujin
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.label_title = new System.Windows.Forms.Label();
-			this.label_progress = new System.Windows.Forms.Label();
-			this.button_cancel = new System.Windows.Forms.Button();
-			this.SuspendLayout();
-			// 
-			// label_title
-			// 
-			this.label_title.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.label_title = new System.Windows.Forms.Label();
+            this.label_progress = new System.Windows.Forms.Label();
+            this.button_cancel = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // label_title
+            // 
+            this.label_title.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.label_title.BackColor = System.Drawing.Color.Gray;
-			this.label_title.ForeColor = System.Drawing.Color.White;
-			this.label_title.Location = new System.Drawing.Point(1, 1);
-			this.label_title.Margin = new System.Windows.Forms.Padding(1);
-			this.label_title.Name = "label_title";
-			this.label_title.Size = new System.Drawing.Size(350, 23);
-			this.label_title.TabIndex = 0;
-			this.label_title.Text = "title";
-			this.label_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			// 
-			// label_progress
-			// 
-			this.label_progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.label_title.BackColor = System.Drawing.Color.Gray;
+            this.label_title.ForeColor = System.Drawing.Color.White;
+            this.label_title.Location = new System.Drawing.Point(1, 1);
+            this.label_title.Margin = new System.Windows.Forms.Padding(1);
+            this.label_title.Name = "label_title";
+            this.label_title.Size = new System.Drawing.Size(467, 29);
+            this.label_title.TabIndex = 0;
+            this.label_title.Text = "title";
+            this.label_title.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // label_progress
+            // 
+            this.label_progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-			this.label_progress.BackColor = System.Drawing.Color.Transparent;
-			this.label_progress.ForeColor = System.Drawing.Color.White;
-			this.label_progress.Location = new System.Drawing.Point(352, 1);
-			this.label_progress.Margin = new System.Windows.Forms.Padding(1);
-			this.label_progress.Name = "label_progress";
-			this.label_progress.Size = new System.Drawing.Size(55, 23);
-			this.label_progress.TabIndex = 1;
-			this.label_progress.Text = "waiting...";
-			this.label_progress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-			// 
-			// button_cancel
-			// 
-			this.button_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.label_progress.BackColor = System.Drawing.Color.Transparent;
+            this.label_progress.ForeColor = System.Drawing.Color.White;
+            this.label_progress.Location = new System.Drawing.Point(469, 1);
+            this.label_progress.Margin = new System.Windows.Forms.Padding(1);
+            this.label_progress.Name = "label_progress";
+            this.label_progress.Size = new System.Drawing.Size(73, 29);
+            this.label_progress.TabIndex = 1;
+            this.label_progress.Text = "waiting...";
+            this.label_progress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // button_cancel
+            // 
+            this.button_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-			this.button_cancel.BackColor = System.Drawing.Color.DarkRed;
-			this.button_cancel.FlatAppearance.BorderSize = 0;
-			this.button_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.button_cancel.ForeColor = System.Drawing.Color.White;
-			this.button_cancel.Location = new System.Drawing.Point(408, 1);
-			this.button_cancel.Margin = new System.Windows.Forms.Padding(1);
-			this.button_cancel.Name = "button_cancel";
-			this.button_cancel.Size = new System.Drawing.Size(23, 23);
-			this.button_cancel.TabIndex = 2;
-			this.button_cancel.TabStop = false;
-			this.button_cancel.Text = "X";
-			this.button_cancel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.button_cancel.UseVisualStyleBackColor = false;
-			// 
-			// TaskUI
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.BackColor = System.Drawing.Color.Transparent;
-			this.Controls.Add(this.button_cancel);
-			this.Controls.Add(this.label_progress);
-			this.Controls.Add(this.label_title);
-			this.Name = "TaskUI";
-			this.Size = new System.Drawing.Size(432, 25);
-			this.ResumeLayout(false);
+            this.button_cancel.BackColor = System.Drawing.Color.DarkRed;
+            this.button_cancel.FlatAppearance.BorderSize = 0;
+            this.button_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_cancel.ForeColor = System.Drawing.Color.White;
+            this.button_cancel.Location = new System.Drawing.Point(544, 1);
+            this.button_cancel.Margin = new System.Windows.Forms.Padding(1);
+            this.button_cancel.Name = "button_cancel";
+            this.button_cancel.Size = new System.Drawing.Size(31, 29);
+            this.button_cancel.TabIndex = 2;
+            this.button_cancel.TabStop = false;
+            this.button_cancel.Text = "X";
+            this.button_cancel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_cancel.UseVisualStyleBackColor = false;
+            // 
+            // TaskUI
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.Transparent;
+            this.Controls.Add(this.button_cancel);
+            this.Controls.Add(this.label_progress);
+            this.Controls.Add(this.label_title);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Name = "TaskUI";
+            this.Size = new System.Drawing.Size(576, 31);
+            this.ResumeLayout(false);
 
 		}
 
@@ -143,5 +144,5 @@ namespace Doujin
 		private System.Windows.Forms.Label label_title;
 		private System.Windows.Forms.Label label_progress;
 		private System.Windows.Forms.Button button_cancel;
-	}
+    }
 }

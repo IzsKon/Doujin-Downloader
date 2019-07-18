@@ -16,6 +16,7 @@ namespace Doujin
 {
 	public partial class Form1 : Form
 	{
+        private Image doujinCover;
 		private string doujinTitle = "";
 		private int doujinLen = 0;
 		private CommonOpenFileDialog folderSelectDialog;
@@ -40,6 +41,7 @@ namespace Doujin
 			magicNumTextBox.Focus();
 			FormBorderStyle = FormBorderStyle.FixedDialog;
 			MaximizeBox = false;
+            MinimizeBox = true;
 
 			folderSelectDialog = new CommonOpenFileDialog();
 			folderSelectDialog.IsFolderPicker = true;
@@ -54,8 +56,8 @@ namespace Doujin
 				selected = true;
 				magicNumTextBox.SelectAll();
 
-				// set up task
-				var mainTask = new Task(() =>
+                // set up task
+			    var mainTask = new Task(() =>
 				{
 					load();
 				});
@@ -113,7 +115,10 @@ namespace Doujin
 					doujinPageRequest = WebRequest.Create(doujinPage);
 					doujinPageRequest.Timeout = 10000;
 					doujinPageRequest.Method = "GET";
-					doujinCoverPic.Image = Image.FromStream(doujinPageRequest.GetResponse().GetResponseStream());
+                    doujinCover = Image.FromStream(doujinPageRequest.GetResponse().GetResponseStream());
+                    doujinCoverPic.Image = doujinCover;
+
+                    downloadButton.Enabled = true;
 				}
 				));
 			}
@@ -291,6 +296,5 @@ namespace Doujin
 
 			return dt;
 		}
-
-	}
+    }
 }
