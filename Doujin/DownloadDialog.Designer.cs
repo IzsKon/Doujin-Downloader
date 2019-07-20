@@ -80,19 +80,18 @@
             // titleTextBox
             // 
             this.titleTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.titleTextBox.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.titleTextBox.Font = new System.Drawing.Font("PMingLiU", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.titleTextBox.ForeColor = System.Drawing.SystemColors.Window;
             this.titleTextBox.Location = new System.Drawing.Point(12, 109);
-            this.titleTextBox.Multiline = true;
             this.titleTextBox.Name = "titleTextBox";
-            this.titleTextBox.Size = new System.Drawing.Size(508, 64);
+            this.titleTextBox.Size = new System.Drawing.Size(508, 35);
             this.titleTextBox.TabIndex = 3;
             // 
             // okBtn
             // 
             this.okBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.okBtn.Font = new System.Drawing.Font("Microsoft JhengHei", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.okBtn.Location = new System.Drawing.Point(274, 185);
+            this.okBtn.Location = new System.Drawing.Point(274, 158);
             this.okBtn.Name = "okBtn";
             this.okBtn.Size = new System.Drawing.Size(120, 40);
             this.okBtn.TabIndex = 4;
@@ -111,7 +110,7 @@
             this.cancelBtn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.cancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cancelBtn.Font = new System.Drawing.Font("Microsoft JhengHei", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.cancelBtn.Location = new System.Drawing.Point(400, 185);
+            this.cancelBtn.Location = new System.Drawing.Point(400, 158);
             this.cancelBtn.Name = "cancelBtn";
             this.cancelBtn.Size = new System.Drawing.Size(120, 40);
             this.cancelBtn.TabIndex = 5;
@@ -124,7 +123,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.CancelButton = this.cancelBtn;
-            this.ClientSize = new System.Drawing.Size(532, 236);
+            this.ClientSize = new System.Drawing.Size(531, 216);
             this.Controls.Add(this.cancelBtn);
             this.Controls.Add(this.okBtn);
             this.Controls.Add(this.titleTextBox);

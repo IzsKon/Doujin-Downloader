@@ -15,7 +15,7 @@ namespace Doujin
     public partial class DownloadDialog : Form
     {
         static private CommonOpenFileDialog folderSelectDialog;
-        public string path { get; }
+        public string path { get; set; }
 
         public DownloadDialog(string title)
         {
@@ -52,7 +52,7 @@ namespace Doujin
 
         private void okBtn_Click(object sender, EventArgs e)
         {
-            string path = filenameButton.Text + "\\" + titleTextBox.Text;
+            path = filenameButton.Text + "\\" + titleTextBox.Text;
             if (Directory.Exists(path))
             {
                 var result = MessageBox.Show("File already existed!\nDo you want to replace the file?", "file Already Exist!",
