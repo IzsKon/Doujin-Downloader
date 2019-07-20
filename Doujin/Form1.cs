@@ -175,8 +175,28 @@ namespace Doujin
 			DownloadTask dt = downloadTaskManager.ElementAt(0);
 			WebRequest doujinPage;
 			Random ran = new Random(int.Parse(magicNumTextBox.Text));
-			string imageLink = "";
-			for (int page = 1; page <= dt.doujinLen; page++)
+
+            // go to the hentai page
+            string imageNum = "";
+            try
+            {
+                doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + dt.magicNum + "/1/");
+                doujinPage.Timeout = 10000;
+                doujinPage.Method = "GET";
+                imageNum = new StreamReader(doujinPage.GetResponse().GetResponseStream()).ReadToEnd();
+            }
+            catch (WebException)
+            {
+                MessageBox.Show("We have problem downloading " + dt.magicNum,
+						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // find the image galleries number
+            imageNum = imageNum.Substring(imageNum.IndexOf("<img src=\"https://i.nhentai.net/galleries/") + "<img src=\"https://i.nhentai.net/galleries/".Length);
+            imageNum = imageNum.Substring(0, imageNum.IndexOf("1.jpg"));
+
+            for (int page = 1; page <= dt.doujinLen; page++)
 			{
 				// if task is ordered to cancel
 				if (dt.cts.IsCancellationRequested) break;
@@ -184,35 +204,34 @@ namespace Doujin
 				//download delay. DO NOT REMOVE!!
 				Thread.Sleep(ran.Next(500, 1000));
 
-				// go to the hentai page
-				try
-				{
-					doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + dt.magicNum + "/" + page.ToString());
-					doujinPage.Timeout = 10000;
-					doujinPage.Method = "GET";
-					imageLink = new StreamReader(doujinPage.GetResponse().GetResponseStream()).ReadToEnd();
-				}
-				catch (WebException) { break; }
-
-				// find the image link
-				imageLink = imageLink.Substring(imageLink.LastIndexOf("<img src=\"") + "<img src = ".Length - 1);
-				imageLink = imageLink.Substring(0, imageLink.IndexOf("\""));
-
 				// download image
 				try
 				{
-					WebClient mywebclient = new WebClient();
-					mywebclient.DownloadFile(imageLink, dt.path + "\\" + page.ToString() + ".jpg");
+                    // var downloadTask = new Thread(() =>
+                    // {
+                    //     WebClient mywebclient = new WebClient();
+                    //     mywebclient.DownloadFile(imageLink, dt.path + "\\" + page.ToString() + ".jpg");
+                    // 
+                    //     // if task is ordered to cancel
+                    //     //if (dt.cts.IsCancellationRequested) break;
+                    // 
+                    //     dt.taskUI.Invoke((Action)(() =>
+                    //     {
+                    //         dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
+                    //     }));
+                    // });
+                    // downloadTask.Start();
 
-					// if task is ordered to cancel
-					if (dt.cts.IsCancellationRequested) break;
+                    WebClient mywebclient = new WebClient();
+                    mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".jpg", 
+                        dt.path + "\\" + page.ToString() + ".jpg");
+                    
+                    dt.taskUI.Invoke((Action)(() =>
+                    {
+                        dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
+                    }));
 
-					dt.taskUI.Invoke((Action)(() =>
-					{
-						dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
-					}));
-
-				}
+                }
 				catch (WebException)
 				{
 					var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
