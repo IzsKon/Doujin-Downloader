@@ -105,14 +105,13 @@
             // doujinLenLabel
             // 
             this.doujinLenLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.doujinLenLabel.AutoSize = true;
             this.doujinLenLabel.BackColor = System.Drawing.Color.Transparent;
             this.doujinLenLabel.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.doujinLenLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.doujinLenLabel.Location = new System.Drawing.Point(3, 487);
+            this.doujinLenLabel.Location = new System.Drawing.Point(2, 479);
             this.doujinLenLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.doujinLenLabel.Name = "doujinLenLabel";
-            this.doujinLenLabel.Size = new System.Drawing.Size(0, 20);
+            this.doujinLenLabel.Size = new System.Drawing.Size(156, 27);
             this.doujinLenLabel.TabIndex = 6;
             // 
             // doujinInfoPanel
@@ -147,7 +146,6 @@
             this.Text = "Doujin Downloader";
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).EndInit();
             this.doujinInfoPanel.ResumeLayout(false);
-            this.doujinInfoPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

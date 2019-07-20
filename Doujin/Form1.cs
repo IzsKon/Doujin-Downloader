@@ -91,19 +91,30 @@ namespace Doujin
 			{
 				doujinInfoPanel.Invoke((Action)(() =>
 				{
+                    //
 					// doujin title
+                    //
 					int titleStart = doujinPage.IndexOf("<h2>") + "<h2>".Length;
 					int titleLength = doujinPage.IndexOf("</h2>") - titleStart;
 					doujinTitle = doujinPage.Substring(titleStart, titleLength);
+                    // if doujin only has one title
+                    if (doujinTitle.Equals("More Like This"))
+                    {
+                        titleStart = doujinPage.IndexOf("<h1>") + "<h1>".Length;
+                        titleLength = doujinPage.IndexOf("</h1>") - titleStart;
+                        doujinTitle = doujinPage.Substring(titleStart, titleLength);
+                    }
 					doujinTitleLabel.Text = doujinTitle;
-
+                    //
 					// doujin length
+                    //
 					int lengthStart = doujinPage.IndexOf("<div>") + "<div>".Length;
 					int lengthLength = doujinPage.IndexOf(" pages</div>") - lengthStart;
 					doujinLen = int.Parse(doujinPage.Substring(lengthStart, lengthLength));
 					doujinLenLabel.Text = doujinLen.ToString() + " pages";
-
+                    //
 					// doujin cover
+                    //
 					doujinPage = doujinPage.Substring(doujinPage.IndexOf("<meta itemprop=\"image\" content=\"") + "<meta itemprop=\"image\" content=\"".Length);
 					doujinPage = doujinPage.Substring(0, doujinPage.IndexOf("\""));
 					doujinPageRequest = WebRequest.Create(doujinPage);
@@ -139,24 +150,15 @@ namespace Doujin
 				}
 			}
 
-            // create folder
-            // string path = "";
-            // 
-            // if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
-            // path = folderSelectDialog.FileName + "\\" + doujinTitle;
-            // if (Directory.Exists(path))
-            // {
-            // 	var result = MessageBox.Show("Folder already existed!\nDo you want to replace the folder?", "Folder Already Exist!",
-            // 								 MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            // 	if (result == DialogResult.No) return;
-            // }
-            // else Directory.CreateDirectory(path);
+            // download dialog
+            string path = "";
+            using (DownloadDialog dd = new DownloadDialog(doujinTitle))
+            { 
+                if (dd.ShowDialog() != DialogResult.OK) return;
+                path = dd.path;
+            }
 
-            DownloadDialog dd = new DownloadDialog(doujinTitle);
-            dd.ShowDialog();
-            if (dd.DialogResult != DialogResult.OK) return;
-            string path = dd.path;
-
+            // new download task
 			DownloadTask dt = newDownloadTask(path);
 			downloadTaskManager.AddLast(dt);
 			if (downloadTaskManager.Count == 1)
@@ -193,6 +195,7 @@ namespace Doujin
             imageNum = imageNum.Substring(imageNum.IndexOf("<img src=\"https://i.nhentai.net/galleries/") + "<img src=\"https://i.nhentai.net/galleries/".Length);
             imageNum = imageNum.Substring(0, imageNum.IndexOf("1.jpg"));
 
+            WebClient mywebclient = new WebClient();
             for (int page = 1; page <= dt.doujinLen; page++)
 			{
 				// if task is ordered to cancel
@@ -204,22 +207,6 @@ namespace Doujin
 				// download image
 				try
 				{
-                    // var downloadTask = new Thread(() =>
-                    // {
-                    //     WebClient mywebclient = new WebClient();
-                    //     mywebclient.DownloadFile(imageLink, dt.path + "\\" + page.ToString() + ".jpg");
-                    // 
-                    //     // if task is ordered to cancel
-                    //     //if (dt.cts.IsCancellationRequested) break;
-                    // 
-                    //     dt.taskUI.Invoke((Action)(() =>
-                    //     {
-                    //         dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
-                    //     }));
-                    // });
-                    // downloadTask.Start();
-
-                    WebClient mywebclient = new WebClient();
                     mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".jpg", 
                         dt.path + "\\" + page.ToString() + ".jpg");
                     
@@ -244,6 +231,7 @@ namespace Doujin
 				}
 			}
 
+            // remove completed task
 			this.Invoke((Action)(() =>
 			{
 				this.Controls.Remove(dt.taskUI);

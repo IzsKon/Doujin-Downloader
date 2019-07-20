@@ -36,6 +36,7 @@
             this.okBtn = new System.Windows.Forms.Button();
             this.filenameToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.cancelBtn = new System.Windows.Forms.Button();
+            this.illegalCharToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // loactionLabel
@@ -86,6 +87,7 @@
             this.titleTextBox.Name = "titleTextBox";
             this.titleTextBox.Size = new System.Drawing.Size(508, 35);
             this.titleTextBox.TabIndex = 3;
+            this.titleTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.titleTextBox_KeyPress);
             // 
             // okBtn
             // 
@@ -116,6 +118,16 @@
             this.cancelBtn.TabIndex = 5;
             this.cancelBtn.Text = "Cancel";
             this.cancelBtn.UseVisualStyleBackColor = true;
+            // 
+            // illegalCharToolTip
+            // 
+            this.illegalCharToolTip.AutomaticDelay = 0;
+            this.illegalCharToolTip.AutoPopDelay = 0;
+            this.illegalCharToolTip.InitialDelay = 0;
+            this.illegalCharToolTip.IsBalloon = true;
+            this.illegalCharToolTip.ReshowDelay = 0;
+            this.illegalCharToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Warning;
+            this.illegalCharToolTip.ToolTipTitle = "File names cannot contain any of the following characters:";
             // 
             // DownloadDialog
             // 
@@ -149,5 +161,6 @@
         private System.Windows.Forms.Button okBtn;
         private System.Windows.Forms.ToolTip filenameToolTip;
         private System.Windows.Forms.Button cancelBtn;
+        private System.Windows.Forms.ToolTip illegalCharToolTip;
     }
 }

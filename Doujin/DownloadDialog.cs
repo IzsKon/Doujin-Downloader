@@ -14,7 +14,8 @@ namespace Doujin
 {
     public partial class DownloadDialog : Form
     {
-        static private CommonOpenFileDialog folderSelectDialog;
+        static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
+        static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         public string path { get; set; }
 
         public DownloadDialog(string title)
@@ -23,8 +24,11 @@ namespace Doujin
 
             FormBorderStyle = FormBorderStyle.FixedDialog;
 
-            folderSelectDialog = new CommonOpenFileDialog();
             folderSelectDialog.IsFolderPicker = true;
+            foreach (string illegal in illegaCharacters)
+            {
+                title = title.Replace(illegal, string.Empty);
+            }
             titleTextBox.Text = title;
 
             string filename = "";
@@ -44,10 +48,10 @@ namespace Doujin
                 }
             }
             filenameButton.Text = filename;
-            folderSelectDialog.DefaultDirectory = filename; // NOT WORKING AS EXPECTED
+            folderSelectDialog.InitialDirectory = filename;
             filenameToolTip.SetToolTip(filenameButton, filename);
 
-            okBtn.Focus(); // NOT WORKING AS EXPECTED
+            okBtn.Select();
         }
 
         private void okBtn_Click(object sender, EventArgs e)
@@ -59,7 +63,18 @@ namespace Doujin
                                              MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No) return;
             }
-            else Directory.CreateDirectory(path);
+            else
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch(System.ArgumentException)
+                {
+                    MessageBox.Show("Illegal characters in path", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
 
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -67,13 +82,27 @@ namespace Doujin
 
         private void filnameButton_Click(object sender, EventArgs e)
         {
+            okBtn.Select();
             if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
             string filename = folderSelectDialog.FileName;
             filenameButton.Text = filename;
+            folderSelectDialog.InitialDirectory = filename;
             filenameToolTip.SetToolTip(filenameButton, filename);
             using (StreamWriter sw = File.CreateText("path"))
             {
                 sw.WriteLine(filename);
+            }
+        }
+
+        private void titleTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            foreach (string illegal in illegaCharacters)
+            {
+                if (e.KeyChar.ToString().Equals(illegal))
+                {
+                    illegalCharToolTip.Show("* | \\ : \" < > ? /", titleTextBox, 10000); // DO NOT WORK AS EXPECTED
+                    e.Handled = true;
+                }
             }
         }
 
