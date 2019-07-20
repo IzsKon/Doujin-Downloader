@@ -11,6 +11,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Reflection;
 
 namespace Doujin
 {
@@ -19,7 +20,6 @@ namespace Doujin
         private Image doujinCover;
 		private string doujinTitle = "";
 		private int doujinLen = 0;
-		private CommonOpenFileDialog folderSelectDialog;
 		private bool selected = false;
 
 		public class DownloadTask
@@ -33,19 +33,13 @@ namespace Doujin
 		}
 
 		private LinkedList<DownloadTask> downloadTaskManager = new LinkedList<DownloadTask>();
-		//private LinkedList<Task> downloadTaskManager = new LinkedList<Task>();
 
 		public Form1()
 		{
 			InitializeComponent();
 			magicNumTextBox.Focus();
 			FormBorderStyle = FormBorderStyle.FixedDialog;
-			MaximizeBox = false;
-            MinimizeBox = true;
-
-			folderSelectDialog = new CommonOpenFileDialog();
-			folderSelectDialog.IsFolderPicker = true;
-		}
+        }
 
 		private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
 		{
@@ -57,14 +51,14 @@ namespace Doujin
 				magicNumTextBox.SelectAll();
 
                 // set up task
-			    var mainTask = new Task(() =>
+                var mainTask = new Task(() =>
 				{
-					load();
-				});
+                    load();
+                });
 				mainTask.Start();
-				await mainTask; // asynchronouly wait page to load
-			}
-		}
+                await mainTask; // asynchronouly wait page to load
+            }
+        }
 
 		private void magicNumber_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -75,8 +69,8 @@ namespace Doujin
 
 		public void load()
 		{
-			// get doujin
-			WebRequest doujinPageRequest;
+            // get doujin
+            WebRequest doujinPageRequest;
 			string doujinPage = "";
 			try
 			{
@@ -129,10 +123,11 @@ namespace Doujin
 				// This exception is inevitable but not a critical issue,
 				// just let the exception go, task will be canceled soon.
 			}
-		}
+        }
 
-		private async void downloadButton_Click(object sender, EventArgs e)
+        private async void downloadButton_Click(object sender, EventArgs e)
 		{
+
 			// check if task alreasdy existed
 			foreach (DownloadTask temp in downloadTaskManager)
 			{
@@ -144,21 +139,23 @@ namespace Doujin
 				}
 			}
 
-			// create folder
-			string path = "";
+            // create folder
+            // string path = "";
+            // 
+            // if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
+            // path = folderSelectDialog.FileName + "\\" + doujinTitle;
+            // if (Directory.Exists(path))
+            // {
+            // 	var result = MessageBox.Show("Folder already existed!\nDo you want to replace the folder?", "Folder Already Exist!",
+            // 								 MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            // 	if (result == DialogResult.No) return;
+            // }
+            // else Directory.CreateDirectory(path);
 
-			if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
-			path = folderSelectDialog.FileName + "\\" + doujinTitle;
-			if (Directory.Exists(path))
-			{
-				var result = MessageBox.Show("Folder already existed!\nDo you want to replace the folder?", "Folder Already Exist!",
-											 MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-				if (result == DialogResult.No) return;
-			}
-			else Directory.CreateDirectory(path);
-
-			// disable download button
-			//downloadButton.Enabled = false;
+            DownloadDialog dd = new DownloadDialog(doujinTitle);
+            dd.ShowDialog();
+            if (dd.DialogResult != DialogResult.OK) return;
+            string path = dd.path;
 
 			DownloadTask dt = newDownloadTask(path);
 			downloadTaskManager.AddLast(dt);
@@ -285,13 +282,8 @@ namespace Doujin
 				downloadDoujin();
 			});
 
-			// magic number
 			dt.magicNum = magicNumTextBox.Text;
-
-			// doujin length
 			dt.doujinLen = doujinLen;
-
-			// download path
 			dt.path = path;
 
 			// set this task cancellable

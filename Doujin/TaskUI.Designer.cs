@@ -82,7 +82,7 @@ namespace Doujin
             // 
             this.label_title.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_title.BackColor = System.Drawing.Color.Gray;
+            this.label_title.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.label_title.ForeColor = System.Drawing.Color.White;
             this.label_title.Location = new System.Drawing.Point(1, 1);
             this.label_title.Margin = new System.Windows.Forms.Padding(1);
@@ -101,7 +101,7 @@ namespace Doujin
             this.label_progress.Location = new System.Drawing.Point(469, 1);
             this.label_progress.Margin = new System.Windows.Forms.Padding(1);
             this.label_progress.Name = "label_progress";
-            this.label_progress.Size = new System.Drawing.Size(73, 29);
+            this.label_progress.Size = new System.Drawing.Size(110, 29);
             this.label_progress.TabIndex = 1;
             this.label_progress.Text = "waiting...";
             this.label_progress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -111,10 +111,13 @@ namespace Doujin
             this.button_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.button_cancel.BackColor = System.Drawing.Color.DarkRed;
+            this.button_cancel.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_cancel.FlatAppearance.BorderSize = 0;
+            this.button_cancel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.IndianRed;
             this.button_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_cancel.Font = new System.Drawing.Font("Microsoft JhengHei", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button_cancel.ForeColor = System.Drawing.Color.White;
-            this.button_cancel.Location = new System.Drawing.Point(544, 1);
+            this.button_cancel.Location = new System.Drawing.Point(581, 1);
             this.button_cancel.Margin = new System.Windows.Forms.Padding(1);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(31, 29);
@@ -132,9 +135,9 @@ namespace Doujin
             this.Controls.Add(this.button_cancel);
             this.Controls.Add(this.label_progress);
             this.Controls.Add(this.label_title);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "TaskUI";
-            this.Size = new System.Drawing.Size(576, 31);
+            this.Size = new System.Drawing.Size(613, 31);
             this.ResumeLayout(false);
 
 		}

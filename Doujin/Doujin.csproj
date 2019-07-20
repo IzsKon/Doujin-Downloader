@@ -53,6 +53,8 @@
       <HintPath>..\packages\WindowsAPICodePack.1.1.0\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -64,8 +66,15 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DownloadDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadDialog.Designer.cs">
+      <DependentUpon>DownloadDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TaskUI.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -80,6 +89,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DownloadDialog.resx">
+      <DependentUpon>DownloadDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TaskUI.resx">
       <DependentUpon>TaskUI.cs</DependentUpon>
     </EmbeddedResource>

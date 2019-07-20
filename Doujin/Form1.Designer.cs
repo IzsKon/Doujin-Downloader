@@ -75,7 +75,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.doujinTitleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.doujinTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.doujinTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.doujinTitleLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.doujinTitleLabel.Location = new System.Drawing.Point(2, 340);
             this.doujinTitleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -87,10 +87,11 @@
             // 
             this.downloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadButton.BackColor = System.Drawing.Color.DodgerBlue;
+            this.downloadButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.downloadButton.Enabled = false;
             this.downloadButton.FlatAppearance.BorderSize = 0;
             this.downloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.downloadButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.downloadButton.Location = new System.Drawing.Point(162, 467);
             this.downloadButton.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
@@ -127,6 +128,7 @@
             // 
             // magicNumToolTip
             // 
+            this.magicNumToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.magicNumToolTip.ToolTipTitle = "magic number";
             // 
             // Form1
@@ -141,9 +143,8 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
-            this.MinimizeBox = false;
             this.Name = "Form1";
-            this.Text = "Doujin";
+            this.Text = "Doujin Downloader";
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).EndInit();
             this.doujinInfoPanel.ResumeLayout(false);
             this.doujinInfoPanel.PerformLayout();
