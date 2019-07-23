@@ -17,12 +17,11 @@ namespace Doujin
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
         static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         public string path { get; set; }
+        public string title { get; set; }
 
         public DownloadDialog(string title)
         {
             InitializeComponent();
-
-            FormBorderStyle = FormBorderStyle.FixedDialog;
 
             folderSelectDialog.IsFolderPicker = true;
             foreach (string illegal in illegaCharacters)
@@ -57,6 +56,7 @@ namespace Doujin
         private void okBtn_Click(object sender, EventArgs e)
         {
             path = filenameButton.Text + "\\" + titleTextBox.Text;
+            title = titleTextBox.Text;
             if (Directory.Exists(path))
             {
                 var result = MessageBox.Show("File already existed!\nDo you want to replace the file?", "file Already Exist!",
@@ -83,7 +83,14 @@ namespace Doujin
         private void filnameButton_Click(object sender, EventArgs e)
         {
             okBtn.Select();
-            if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
+            try
+            {
+                if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                return;
+            }
             string filename = folderSelectDialog.FileName;
             filenameButton.Text = filename;
             folderSelectDialog.InitialDirectory = filename;

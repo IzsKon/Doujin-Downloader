@@ -38,7 +38,6 @@ namespace Doujin
 		{
 			InitializeComponent();
 			magicNumTextBox.Focus();
-			FormBorderStyle = FormBorderStyle.FixedDialog;
         }
 
 		private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -156,6 +155,7 @@ namespace Doujin
             { 
                 if (dd.ShowDialog() != DialogResult.OK) return;
                 path = dd.path;
+                doujinTitle = dd.title;
             }
 
             // new download task
@@ -214,7 +214,6 @@ namespace Doujin
                     {
                         dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
                     }));
-
                 }
 				catch (WebException)
 				{

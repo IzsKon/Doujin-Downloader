@@ -142,6 +142,7 @@
             this.Controls.Add(this.titleLabel);
             this.Controls.Add(this.filenameButton);
             this.Controls.Add(this.loactionLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "DownloadDialog";

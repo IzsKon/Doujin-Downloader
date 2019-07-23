@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.magicNumTextBox = new System.Windows.Forms.TextBox();
             this.doujinCoverPic = new System.Windows.Forms.PictureBox();
             this.doujinTitleLabel = new System.Windows.Forms.Label();
@@ -139,7 +140,8 @@
             this.ClientSize = new System.Drawing.Size(982, 576);
             this.Controls.Add(this.doujinInfoPanel);
             this.Controls.Add(this.magicNumTextBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
             this.Name = "Form1";
