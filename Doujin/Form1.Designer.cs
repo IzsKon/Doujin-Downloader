@@ -37,6 +37,7 @@
             this.doujinLenLabel = new System.Windows.Forms.Label();
             this.doujinInfoPanel = new System.Windows.Forms.Panel();
             this.magicNumToolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.pathTextBox = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.doujinInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -89,7 +90,6 @@
             this.downloadButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.downloadButton.BackColor = System.Drawing.Color.DodgerBlue;
             this.downloadButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.downloadButton.Enabled = false;
             this.downloadButton.FlatAppearance.BorderSize = 0;
             this.downloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -131,6 +131,13 @@
             this.magicNumToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.magicNumToolTip.ToolTipTitle = "magic number";
             // 
+            // pathTextBox
+            // 
+            this.pathTextBox.Location = new System.Drawing.Point(358, 13);
+            this.pathTextBox.Name = "pathTextBox";
+            this.pathTextBox.Size = new System.Drawing.Size(315, 25);
+            this.pathTextBox.TabIndex = 8;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -138,6 +145,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(982, 576);
+            this.Controls.Add(this.pathTextBox);
             this.Controls.Add(this.doujinInfoPanel);
             this.Controls.Add(this.magicNumTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -162,6 +170,7 @@
         private System.Windows.Forms.Label doujinLenLabel;
         private System.Windows.Forms.Panel doujinInfoPanel;
         private System.Windows.Forms.ToolTip magicNumToolTip;
+        private System.Windows.Forms.TextBox pathTextBox;
     }
 }
 
