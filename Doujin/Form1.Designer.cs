@@ -37,7 +37,9 @@
             this.doujinLenLabel = new System.Windows.Forms.Label();
             this.doujinInfoPanel = new System.Windows.Forms.Panel();
             this.magicNumToolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.pathTextBox = new System.Windows.Forms.TextBox();
+            this.startTextBox = new System.Windows.Forms.TextBox();
+            this.endTextBox = new System.Windows.Forms.TextBox();
+            this.pathButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.doujinInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -131,12 +133,31 @@
             this.magicNumToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.magicNumToolTip.ToolTipTitle = "magic number";
             // 
-            // pathTextBox
+            // startTextBox
             // 
-            this.pathTextBox.Location = new System.Drawing.Point(358, 13);
-            this.pathTextBox.Name = "pathTextBox";
-            this.pathTextBox.Size = new System.Drawing.Size(315, 25);
-            this.pathTextBox.TabIndex = 8;
+            this.startTextBox.Location = new System.Drawing.Point(358, 81);
+            this.startTextBox.Name = "startTextBox";
+            this.startTextBox.Size = new System.Drawing.Size(100, 25);
+            this.startTextBox.TabIndex = 9;
+            this.startTextBox.Text = "1";
+            // 
+            // endTextBox
+            // 
+            this.endTextBox.Location = new System.Drawing.Point(485, 81);
+            this.endTextBox.Name = "endTextBox";
+            this.endTextBox.Size = new System.Drawing.Size(118, 25);
+            this.endTextBox.TabIndex = 10;
+            this.endTextBox.Text = "2558";
+            // 
+            // pathButton
+            // 
+            this.pathButton.Location = new System.Drawing.Point(358, 13);
+            this.pathButton.Name = "pathButton";
+            this.pathButton.Size = new System.Drawing.Size(588, 40);
+            this.pathButton.TabIndex = 11;
+            this.pathButton.Text = "C:\\\\";
+            this.pathButton.UseVisualStyleBackColor = true;
+            this.pathButton.Click += new System.EventHandler(this.pathButton_Click);
             // 
             // Form1
             // 
@@ -145,7 +166,9 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(982, 576);
-            this.Controls.Add(this.pathTextBox);
+            this.Controls.Add(this.pathButton);
+            this.Controls.Add(this.endTextBox);
+            this.Controls.Add(this.startTextBox);
             this.Controls.Add(this.doujinInfoPanel);
             this.Controls.Add(this.magicNumTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -170,7 +193,9 @@
         private System.Windows.Forms.Label doujinLenLabel;
         private System.Windows.Forms.Panel doujinInfoPanel;
         private System.Windows.Forms.ToolTip magicNumToolTip;
-        private System.Windows.Forms.TextBox pathTextBox;
+        private System.Windows.Forms.TextBox startTextBox;
+        private System.Windows.Forms.TextBox endTextBox;
+        private System.Windows.Forms.Button pathButton;
     }
 }
 
