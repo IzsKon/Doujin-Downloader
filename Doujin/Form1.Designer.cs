@@ -40,8 +40,11 @@
             this.startTextBox = new System.Windows.Forms.TextBox();
             this.endTextBox = new System.Windows.Forms.TextBox();
             this.pathButton = new System.Windows.Forms.Button();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.doujinInfoPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // magicNumTextBox
@@ -67,7 +70,7 @@
             this.doujinCoverPic.Location = new System.Drawing.Point(0, 0);
             this.doujinCoverPic.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.doujinCoverPic.Name = "doujinCoverPic";
-            this.doujinCoverPic.Size = new System.Drawing.Size(313, 336);
+            this.doujinCoverPic.Size = new System.Drawing.Size(313, 343);
             this.doujinCoverPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.doujinCoverPic.TabIndex = 3;
             this.doujinCoverPic.TabStop = false;
@@ -81,10 +84,10 @@
             this.doujinTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.doujinTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.doujinTitleLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.doujinTitleLabel.Location = new System.Drawing.Point(2, 340);
+            this.doujinTitleLabel.Location = new System.Drawing.Point(2, 324);
             this.doujinTitleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.doujinTitleLabel.Name = "doujinTitleLabel";
-            this.doujinTitleLabel.Size = new System.Drawing.Size(313, 123);
+            this.doujinTitleLabel.Size = new System.Drawing.Size(313, 141);
             this.doujinTitleLabel.TabIndex = 4;
             // 
             // downloadButton
@@ -96,7 +99,7 @@
             this.downloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.downloadButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.downloadButton.Location = new System.Drawing.Point(162, 467);
+            this.downloadButton.Location = new System.Drawing.Point(164, 469);
             this.downloadButton.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(151, 40);
@@ -111,7 +114,7 @@
             this.doujinLenLabel.BackColor = System.Drawing.Color.Transparent;
             this.doujinLenLabel.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.doujinLenLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.doujinLenLabel.Location = new System.Drawing.Point(2, 479);
+            this.doujinLenLabel.Location = new System.Drawing.Point(4, 481);
             this.doujinLenLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.doujinLenLabel.Name = "doujinLenLabel";
             this.doujinLenLabel.Size = new System.Drawing.Size(156, 27);
@@ -119,13 +122,14 @@
             // 
             // doujinInfoPanel
             // 
+            this.doujinInfoPanel.Controls.Add(this.progressBar);
             this.doujinInfoPanel.Controls.Add(this.doujinCoverPic);
             this.doujinInfoPanel.Controls.Add(this.doujinLenLabel);
             this.doujinInfoPanel.Controls.Add(this.downloadButton);
             this.doujinInfoPanel.Controls.Add(this.doujinTitleLabel);
             this.doujinInfoPanel.Location = new System.Drawing.Point(13, 60);
             this.doujinInfoPanel.Name = "doujinInfoPanel";
-            this.doujinInfoPanel.Size = new System.Drawing.Size(315, 514);
+            this.doujinInfoPanel.Size = new System.Drawing.Size(315, 532);
             this.doujinInfoPanel.TabIndex = 7;
             // 
             // magicNumToolTip
@@ -159,13 +163,24 @@
             this.pathButton.UseVisualStyleBackColor = true;
             this.pathButton.Click += new System.EventHandler(this.pathButton_Click);
             // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(2, 516);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(313, 10);
+            this.progressBar.TabIndex = 7;
+            // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(982, 576);
+            this.ClientSize = new System.Drawing.Size(982, 598);
             this.Controls.Add(this.pathButton);
             this.Controls.Add(this.endTextBox);
             this.Controls.Add(this.startTextBox);
@@ -179,6 +194,7 @@
             this.Text = "Doujin Downloader";
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).EndInit();
             this.doujinInfoPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,6 +212,8 @@
         private System.Windows.Forms.TextBox startTextBox;
         private System.Windows.Forms.TextBox endTextBox;
         private System.Windows.Forms.Button pathButton;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }
 

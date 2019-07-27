@@ -21,6 +21,7 @@ namespace Doujin
         private string doujinTitle = "";
         private string magicNumber = "";
         private int doujinLen = 0;
+        private string path = "";
         private bool selected = false;
         static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
@@ -125,6 +126,7 @@ namespace Doujin
                     int lengthLength = doujinPage.IndexOf(" pages</div>") - lengthStart;
                     doujinLen = int.Parse(doujinPage.Substring(lengthStart, lengthLength));
                     doujinLenLabel.Text = doujinLen.ToString() + " pages";
+                    progressBar.Maximum = doujinLen;
                     //
                     // doujin cover
                     //
@@ -151,23 +153,19 @@ namespace Doujin
         {
             downloadButton.Enabled = false;
 
-            for(int i = int.Parse(startTextBox.Text); i <= int.Parse(endTextBox.Text); i++)
+            var mainTask = new Task(() =>
             {
-                var mainTask = new Task(() =>
+                for (int i = int.Parse(startTextBox.Text); i <= int.Parse(endTextBox.Text); i++)
                 {
                     addTask(i.ToString());
-                });
-                mainTask.Start();
-                await mainTask; // asynchronouly wait page to load
-            }
-            
-
-            //downloadTaskManager.ElementAt(0).downloadTask.Start();
-            //await downloadTaskManager.ElementAt(0).downloadTask;
+                }
+            });
+            mainTask.Start();
+            await mainTask; // asynchronouly wait page to load
 
         }
 
-        private async void downloadDoujin(DownloadTask dt)
+        private void downloadDoujin()
         {
             WebRequest doujinPage;
             Random ran = new Random(int.Parse(magicNumTextBox.Text));
@@ -176,14 +174,14 @@ namespace Doujin
             string imageNum = "";
             try
             {
-                doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + dt.magicNum + "/1/");
+                doujinPage = WebRequest.Create(@"https://nhentai.net/g/" + magicNumber + "/1/");
                 doujinPage.Timeout = 10000;
                 doujinPage.Method = "GET";
                 imageNum = new StreamReader(doujinPage.GetResponse().GetResponseStream()).ReadToEnd();
             }
             catch (WebException)
             {
-                MessageBox.Show("We have problem downloading " + dt.magicNum,
+                MessageBox.Show("We have problem downloading " + magicNumber,
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
@@ -195,9 +193,6 @@ namespace Doujin
             WebClient mywebclient = new WebClient();
             for (int page = 1; page <= 3 /* dt.doujinLen */; page++)
             {
-                // if task is ordered to cancel
-                if (dt.cts.IsCancellationRequested) break;
-
                 //download delay. DO NOT REMOVE!!
                 Thread.Sleep(ran.Next(500, 700));
 
@@ -205,54 +200,37 @@ namespace Doujin
                 try
                 {
                     mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".jpg",
-                        dt.path + "\\" + page.ToString() + ".jpg");
-
-                    dt.taskUI.Invoke((Action)(() =>
-                    {
-                        dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
-                    }));
+                        path + "\\" + page.ToString() + ".jpg");
                 }
                 catch (WebException)
                 {
-                    var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
-                        "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-                    // retry?
-                    if (result == DialogResult.Retry)
+                    try // the image may be png
                     {
-                        --page;
-                        continue;
+                        mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".png",
+                            path + "\\" + page.ToString() + ".png");
                     }
-                    else return;
-                }
-            }
-
-            // remove completed task
-            this.Invoke((Action)(() =>
-            {
-                this.Controls.Remove(dt.taskUI);
-            }));
-            downloadTaskManager.RemoveFirst();
-
-            // move all download tasks above
-            for (int i = 0; i < downloadTaskManager.Count; ++i)
-            {
-                var temp = downloadTaskManager.ElementAt(i).taskUI;
-                try
-                {
-                    temp.Invoke((Action)(() =>
+                    catch (WebException)
                     {
-                        temp.shift(temp.Location, new Point(270, 25 + 25 * i));
-                    }));
-                }
-                catch { };
-            }
 
-            // download next doujin
-            if (downloadTaskManager.Count > 0)
-            {
-                downloadTaskManager.ElementAt(0).downloadTask.Start();
-                await downloadTaskManager.ElementAt(0).downloadTask;
+                        var result = MessageBox.Show("We have problem downloading " + magicNumber + ", page" + page.ToString(),
+                            "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                        // retry?
+                        if (result == DialogResult.Retry)
+                        {
+                            --page;
+                            continue;
+                        }
+                        else return;
+                    }
+
+                }
+
+                progressBar.Invoke((Action)(() =>
+                {
+                    progressBar.Value = page;
+                }));
+                
             }
         }
 
@@ -263,7 +241,7 @@ namespace Doujin
             // download task
             dt.downloadTask = new Task(() =>
             {
-                downloadDoujin(dt);
+                downloadDoujin();
             });
 
             dt.magicNum = magicNumTextBox.Text;
@@ -278,14 +256,22 @@ namespace Doujin
             TaskUI taskui = new TaskUI();
             //taskui.Location = new Point(270, 25 + 25 * downloadTaskManager.Count);
             Point bar = new Point(270, 25 + 25 * downloadTaskManager.Count);
-            taskui.shift(new Point(bar.X, bar.Y + 25), bar);
-            taskui.setTitle(doujinTitle);
-            taskui.setCancelEvent((sen, eve) =>
+
+            try
             {
-                tokenSource.Cancel();
-                taskui.setProgress("canceled");
-                taskui.setProgressColor(Color.Gray);
-            });
+                taskui.Invoke((Action)(() =>
+                {
+                    taskui.shift(new Point(bar.X, bar.Y + 25), bar);
+                    taskui.setTitle(doujinTitle);
+                    taskui.setCancelEvent((sen, eve) =>
+                    {
+                        tokenSource.Cancel();
+                        taskui.setProgress("canceled");
+                        taskui.setProgressColor(Color.Gray);
+                    });
+                }));
+            }
+            catch { };
             dt.taskUI = taskui;
 
             try
@@ -310,11 +296,12 @@ namespace Doujin
             for (int i = 0; i < 25; i++)
             {
                 loliHentai = loliHentai.Substring(loliHentai.IndexOf("<a href=\"/g/") + "<a href=\"/g/".Length);
+                magicNumber = loliHentai.Substring(0, loliHentai.IndexOf("/"));
                 try
                 {
                     magicNumTextBox.Invoke((Action)(() =>
                     {
-                        magicNumTextBox.Text = loliHentai.Substring(0, loliHentai.IndexOf("/"));
+                        magicNumTextBox.Text = magicNumber;
                     }));
                 }
                 catch
@@ -323,38 +310,16 @@ namespace Doujin
                 }
 
                 // create folder
-                string path = pathButton.Text + "\\" + magicNumTextBox.Text;
+                path = pathButton.Text + "\\" + magicNumber;
                 if (!Directory.Exists(path))
                 {
-                    try
-                    {
-                        Directory.CreateDirectory(path);
-                    }
-                    catch (System.ArgumentException)
-                    {
-                        foreach (string illegal in illegaCharacters)
-                        {
-                            doujinTitle = doujinTitle.Replace(illegal, string.Empty);
-                        }
-                        path = pathButton.Text + "\\" + magicNumTextBox.Text;
-                        Directory.CreateDirectory(path);
-                    }
+                    Directory.CreateDirectory(path);
                 }
 
                 // load page
                 load();
+                downloadDoujin();
 
-                // new download task
-                DownloadTask dt = newDownloadTask(path);
-                downloadTaskManager.AddLast(dt);
-                downloadDoujin(dt);
-
-
-                // if (downloadTaskManager.Count == 1)
-                // {
-                //     downloadTaskManager.ElementAt(0).downloadTask.Start();
-                //     await downloadTaskManager.ElementAt(0).downloadTask;
-                // }
             }
 
         }
