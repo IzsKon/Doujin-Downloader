@@ -26,7 +26,6 @@ namespace Doujin
         static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
 
-
         public class DownloadTask
         {
             public Task downloadTask;
@@ -43,6 +42,9 @@ namespace Doujin
         {
             InitializeComponent();
             folderSelectDialog.IsFolderPicker = true;
+
+            if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
+            pathButton.Text = folderSelectDialog.FileName;
         }
 
         private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
@@ -126,7 +128,11 @@ namespace Doujin
                     int lengthLength = doujinPage.IndexOf(" pages</div>") - lengthStart;
                     doujinLen = int.Parse(doujinPage.Substring(lengthStart, lengthLength));
                     doujinLenLabel.Text = doujinLen.ToString() + " pages";
+                    //
+                    // progress bar
+                    //
                     progressBar.Maximum = doujinLen;
+                    progressBar.Value = 0;
                     //
                     // doujin cover
                     //
@@ -152,11 +158,21 @@ namespace Doujin
         private async void downloadButton_Click(object sender, EventArgs e)
         {
             downloadButton.Enabled = false;
+            pathButton.Enabled = false;
 
             var mainTask = new Task(() =>
             {
                 for (int i = int.Parse(startTextBox.Text); i <= int.Parse(endTextBox.Text); i++)
                 {
+                    try
+                    {
+                        pageLabel.Invoke((Action)(() =>
+                        {
+                            pageLabel.Text = "now at page " + i.ToString();
+                        }));
+                    }
+                    catch { }
+             
                     addTask(i.ToString());
                 }
             });
@@ -191,7 +207,7 @@ namespace Doujin
             imageNum = imageNum.Substring(0, imageNum.IndexOf("/"));
 
             WebClient mywebclient = new WebClient();
-            for (int page = 1; page <= 3 /* dt.doujinLen */; page++)
+            for (int page = 1; page <= doujinLen; page++)
             {
                 //download delay. DO NOT REMOVE!!
                 Thread.Sleep(ran.Next(500, 700));
@@ -207,29 +223,27 @@ namespace Doujin
                     try // the image may be png
                     {
                         mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".png",
-                            path + "\\" + page.ToString() + ".png");
+                             path + "\\" + page.ToString() + ".png");
                     }
                     catch (WebException)
                     {
-
-                        var result = MessageBox.Show("We have problem downloading " + magicNumber + ", page" + page.ToString(),
-                            "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-                        // retry?
-                        if (result == DialogResult.Retry)
+                        using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
                         {
-                            --page;
-                            continue;
+                            sw.WriteLine(magicNumber + ", " + page.ToString());
                         }
-                        else return;
+                        break;
                     }
 
                 }
 
-                progressBar.Invoke((Action)(() =>
+                try
                 {
-                    progressBar.Value = page;
-                }));
+                    progressBar.Invoke((Action)(() =>
+                    {
+                        progressBar.Value = page;
+                    }));
+                }
+                catch { }
                 
             }
         }
@@ -328,6 +342,17 @@ namespace Doujin
         {
             if (folderSelectDialog.ShowDialog() != CommonFileDialogResult.Ok) return;
             pathButton.Text = folderSelectDialog.FileName;
+        }
+
+        private void startTextBox_TextChanged(object sender, EventArgs e)
+        {
+            pageLabel.Text = "now at page " + startTextBox.Text;
+        }
+
+        private void numOnly_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
         }
     }
 }
