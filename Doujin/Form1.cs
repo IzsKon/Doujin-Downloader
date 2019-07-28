@@ -202,7 +202,7 @@ namespace Doujin
 				if (dt.cts.IsCancellationRequested) break;
 
 				//download delay. DO NOT REMOVE!!
-				Thread.Sleep(ran.Next(500, 1000));
+				Thread.Sleep(ran.Next(400, 600));
 
 				// download image
 				try
@@ -291,7 +291,6 @@ namespace Doujin
 
 			// task ui
 			TaskUI taskui = new TaskUI();
-			//taskui.Location = new Point(270, 25 + 25 * downloadTaskManager.Count);
 			Point bar = new Point(270, 25 + 25 * downloadTaskManager.Count);
 			taskui.shift(new Point(bar.X, bar.Y + 25), bar);
 			taskui.setTitle(doujinTitle);
