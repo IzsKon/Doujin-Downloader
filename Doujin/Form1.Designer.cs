@@ -36,13 +36,10 @@
             this.doujinLenLabel = new System.Windows.Forms.Label();
             this.doujinInfoPanel = new System.Windows.Forms.Panel();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.startTextBox = new System.Windows.Forms.TextBox();
-            this.endTextBox = new System.Windows.Forms.TextBox();
+            this.htmlTextBox = new System.Windows.Forms.TextBox();
             this.pathButton = new System.Windows.Forms.Button();
-            this.startLabel = new System.Windows.Forms.Label();
-            this.endLabel = new System.Windows.Forms.Label();
-            this.pathLabel = new System.Windows.Forms.Label();
-            this.pageLabel = new System.Windows.Forms.Label();
+            this.htmlLabel = new System.Windows.Forms.Label();
+            this.skipButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.doujinInfoPanel.SuspendLayout();
             this.SuspendLayout();
@@ -140,77 +137,57 @@
             this.progressBar.Size = new System.Drawing.Size(313, 10);
             this.progressBar.TabIndex = 7;
             // 
-            // startTextBox
+            // htmlTextBox
             // 
-            this.startTextBox.ImeMode = System.Windows.Forms.ImeMode.Alpha;
-            this.startTextBox.Location = new System.Drawing.Point(358, 150);
-            this.startTextBox.Name = "startTextBox";
-            this.startTextBox.Size = new System.Drawing.Size(100, 25);
-            this.startTextBox.TabIndex = 9;
-            this.startTextBox.Text = "1";
-            this.startTextBox.TextChanged += new System.EventHandler(this.startTextBox_TextChanged);
-            this.startTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numOnly_KeyPress);
-            // 
-            // endTextBox
-            // 
-            this.endTextBox.ImeMode = System.Windows.Forms.ImeMode.Alpha;
-            this.endTextBox.Location = new System.Drawing.Point(502, 150);
-            this.endTextBox.Name = "endTextBox";
-            this.endTextBox.Size = new System.Drawing.Size(118, 25);
-            this.endTextBox.TabIndex = 10;
-            this.endTextBox.Text = "2558";
-            this.endTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.numOnly_KeyPress);
+            this.htmlTextBox.ImeMode = System.Windows.Forms.ImeMode.Alpha;
+            this.htmlTextBox.Location = new System.Drawing.Point(358, 116);
+            this.htmlTextBox.Multiline = true;
+            this.htmlTextBox.Name = "htmlTextBox";
+            this.htmlTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.htmlTextBox.Size = new System.Drawing.Size(612, 470);
+            this.htmlTextBox.TabIndex = 9;
+            this.htmlTextBox.Text = "please copy the page html here";
+            this.htmlTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.htmlTextBox_MouseDown);
             // 
             // pathButton
             // 
-            this.pathButton.Location = new System.Drawing.Point(358, 206);
+            this.pathButton.Location = new System.Drawing.Point(358, 13);
             this.pathButton.Name = "pathButton";
             this.pathButton.Size = new System.Drawing.Size(588, 40);
             this.pathButton.TabIndex = 11;
             this.pathButton.Text = "C:\\\\";
+            this.pathButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.pathButton.UseVisualStyleBackColor = true;
             this.pathButton.Click += new System.EventHandler(this.pathButton_Click);
             // 
-            // startLabel
+            // htmlLabel
             // 
-            this.startLabel.AutoSize = true;
-            this.startLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.startLabel.Location = new System.Drawing.Point(358, 132);
-            this.startLabel.Name = "startLabel";
-            this.startLabel.Size = new System.Drawing.Size(65, 15);
-            this.startLabel.TabIndex = 12;
-            this.startLabel.Text = "Start Page";
+            this.htmlLabel.AutoSize = true;
+            this.htmlLabel.Font = new System.Drawing.Font("Adobe Heiti Std R", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.htmlLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.htmlLabel.Location = new System.Drawing.Point(353, 88);
+            this.htmlLabel.Name = "htmlLabel";
+            this.htmlLabel.Size = new System.Drawing.Size(54, 25);
+            this.htmlLabel.TabIndex = 12;
+            this.htmlLabel.Text = "html";
             // 
-            // endLabel
+            // skipButton
             // 
-            this.endLabel.AutoSize = true;
-            this.endLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.endLabel.Location = new System.Drawing.Point(499, 132);
-            this.endLabel.Name = "endLabel";
-            this.endLabel.Size = new System.Drawing.Size(61, 15);
-            this.endLabel.TabIndex = 13;
-            this.endLabel.Text = "End Page";
-            // 
-            // pathLabel
-            // 
-            this.pathLabel.AutoSize = true;
-            this.pathLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.pathLabel.Location = new System.Drawing.Point(358, 188);
-            this.pathLabel.Name = "pathLabel";
-            this.pathLabel.Size = new System.Drawing.Size(119, 15);
-            this.pathLabel.TabIndex = 14;
-            this.pathLabel.Text = "Download Location";
-            // 
-            // pageLabel
-            // 
-            this.pageLabel.AutoSize = true;
-            this.pageLabel.Font = new System.Drawing.Font("PMingLiU", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.pageLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.pageLabel.Location = new System.Drawing.Point(640, 150);
-            this.pageLabel.Name = "pageLabel";
-            this.pageLabel.Size = new System.Drawing.Size(141, 24);
-            this.pageLabel.TabIndex = 15;
-            this.pageLabel.Text = "now at page 1 ";
+            this.skipButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.skipButton.BackColor = System.Drawing.Color.DodgerBlue;
+            this.skipButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.skipButton.FlatAppearance.BorderSize = 0;
+            this.skipButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.skipButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.skipButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.skipButton.Location = new System.Drawing.Point(873, 69);
+            this.skipButton.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
+            this.skipButton.Name = "skipButton";
+            this.skipButton.Size = new System.Drawing.Size(97, 40);
+            this.skipButton.TabIndex = 13;
+            this.skipButton.Text = "Skip";
+            this.skipButton.UseVisualStyleBackColor = false;
+            this.skipButton.Click += new System.EventHandler(this.skipButton_Click);
             // 
             // Form1
             // 
@@ -219,13 +196,10 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(982, 598);
-            this.Controls.Add(this.pageLabel);
-            this.Controls.Add(this.pathLabel);
-            this.Controls.Add(this.endLabel);
-            this.Controls.Add(this.startLabel);
+            this.Controls.Add(this.skipButton);
+            this.Controls.Add(this.htmlLabel);
             this.Controls.Add(this.pathButton);
-            this.Controls.Add(this.endTextBox);
-            this.Controls.Add(this.startTextBox);
+            this.Controls.Add(this.htmlTextBox);
             this.Controls.Add(this.doujinInfoPanel);
             this.Controls.Add(this.magicNumTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -249,14 +223,11 @@
         private System.Windows.Forms.Button downloadButton;
         private System.Windows.Forms.Label doujinLenLabel;
         private System.Windows.Forms.Panel doujinInfoPanel;
-        private System.Windows.Forms.TextBox startTextBox;
-        private System.Windows.Forms.TextBox endTextBox;
+        private System.Windows.Forms.TextBox htmlTextBox;
         private System.Windows.Forms.Button pathButton;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Label pageLabel;
-        private System.Windows.Forms.Label pathLabel;
-        private System.Windows.Forms.Label endLabel;
-        private System.Windows.Forms.Label startLabel;
+        private System.Windows.Forms.Label htmlLabel;
+        private System.Windows.Forms.Button skipButton;
     }
 }
 

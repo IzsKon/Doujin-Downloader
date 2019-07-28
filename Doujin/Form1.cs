@@ -22,7 +22,7 @@ namespace Doujin
         private string magicNumber = "";
         private int doujinLen = 0;
         private string path = "";
-        private bool selected = false;
+        private CancellationTokenSource cts = new CancellationTokenSource();
         static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
 
@@ -53,13 +53,12 @@ namespace Doujin
                 e.Handled = true;
             if (e.KeyChar == (char)13)
             {
-                selected = true;
                 magicNumTextBox.SelectAll();
 
                 // set up task
                 var mainTask = new Task(() =>
                 {
-                    load();
+                    loadDoujin();
                 });
                 mainTask.Start();
                 await mainTask; // asynchronouly wait page to load
@@ -68,12 +67,10 @@ namespace Doujin
 
         private void magicNumber_MouseDown(object sender, MouseEventArgs e)
         {
-            if (!selected) magicNumTextBox.SelectAll();
-            else magicNumTextBox.DeselectAll();
-            selected = !selected;
+
         }
 
-        public void load()
+        public void loadDoujin()
         {
             // get doujin
             WebRequest doujinPageRequest;
@@ -97,16 +94,6 @@ namespace Doujin
             {
                 doujinInfoPanel.Invoke((Action)(() =>
                 {
-                    //
-                    // doujin info
-                    //
-                    int infoStart = doujinPage.IndexOf("<div id=\"info-block\">") + "<div id=\"info-block\">".Length;
-                    int infoLength = doujinPage.IndexOf("<div class=\"buttons\">") - infoStart;
-                    string info = doujinPage.Substring(infoStart, infoLength);
-                    using (StreamWriter sw = File.CreateText(pathButton.Text + "\\" + magicNumTextBox.Text + "\\info"))
-                    {
-                        sw.WriteLine(info);
-                    }
                     //
                     // doujin title
                     //
@@ -159,27 +146,17 @@ namespace Doujin
         {
             downloadButton.Enabled = false;
             pathButton.Enabled = false;
+            htmlTextBox.ReadOnly = true;
 
             var mainTask = new Task(() =>
             {
-                for (int i = int.Parse(startTextBox.Text); i <= int.Parse(endTextBox.Text); i++)
-                {
-                    try
-                    {
-                        pageLabel.Invoke((Action)(() =>
-                        {
-                            pageLabel.Text = "now at page " + i.ToString();
-                        }));
-                    }
-                    catch { }
-             
-                    addTask(i.ToString());
-                }
+                addTask();
             });
             mainTask.Start();
             await mainTask; // asynchronouly wait page to load
 
             MessageBox.Show("Donwload Complete", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            htmlTextBox.ReadOnly = false;
         }
 
         private void downloadDoujin()
@@ -210,8 +187,23 @@ namespace Doujin
             WebClient mywebclient = new WebClient();
             for (int page = 1; page <= doujinLen; page++)
             {
+                // is canceld?
+                if (cts.IsCancellationRequested)
+                {
+                    cts = new CancellationTokenSource();
+                    try
+                    {
+                        skipButton.Invoke((Action)(() =>
+                        {
+                            skipButton.Enabled = true;
+                        }));
+                    }
+                    catch { };
+                    return;
+                }
+
                 //download delay. DO NOT REMOVE!!
-                Thread.Sleep(ran.Next(500, 700));
+                Thread.Sleep(ran.Next(400, 500));
 
                 // download image
                 try
@@ -249,90 +241,61 @@ namespace Doujin
             }
         }
 
-        private DownloadTask newDownloadTask(string path)
+        private void addTask()
         {
-            DownloadTask dt = new DownloadTask();
-
-            // download task
-            dt.downloadTask = new Task(() =>
-            {
-                downloadDoujin();
-            });
-
-            dt.magicNum = magicNumTextBox.Text;
-            dt.doujinLen = doujinLen;
-            dt.path = path;
-
-            // set this task cancellable
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            dt.cts = tokenSource;
-
-            // task ui
-            TaskUI taskui = new TaskUI();
-            //taskui.Location = new Point(270, 25 + 25 * downloadTaskManager.Count);
-            Point bar = new Point(270, 25 + 25 * downloadTaskManager.Count);
-
-            try
-            {
-                taskui.Invoke((Action)(() =>
-                {
-                    taskui.shift(new Point(bar.X, bar.Y + 25), bar);
-                    taskui.setTitle(doujinTitle);
-                    taskui.setCancelEvent((sen, eve) =>
-                    {
-                        tokenSource.Cancel();
-                        taskui.setProgress("canceled");
-                        taskui.setProgressColor(Color.Gray);
-                    });
-                }));
-            }
-            catch { };
-            dt.taskUI = taskui;
-
-            try
-            {
-                this.Invoke((Action)(() =>
-                {
-                    this.Controls.Add(taskui);
-                }));
-            }
-            catch { };
-
-            return dt;
-        }
-
-        private void addTask(string page)
-        {
-            WebRequest loliPage = WebRequest.Create(@"https://nhentai.net/tag/lolicon/?page=" + page);
-            loliPage.Timeout = 10000;
-            loliPage.Method = "GET";
-            string loliHentai = new StreamReader(loliPage.GetResponse().GetResponseStream()).ReadToEnd();
+            string favPage = htmlTextBox.Text;
 
             for (int i = 0; i < 25; i++)
             {
-                loliHentai = loliHentai.Substring(loliHentai.IndexOf("<a href=\"/g/") + "<a href=\"/g/".Length);
-                magicNumber = loliHentai.Substring(0, loliHentai.IndexOf("/"));
+                favPage = favPage.Substring(favPage.IndexOf("<a href=\"/g/") + "<a href=\"/g/".Length);
+                magicNumber = favPage.Substring(0, favPage.IndexOf("/"));
                 try
                 {
                     magicNumTextBox.Invoke((Action)(() =>
                     {
                         magicNumTextBox.Text = magicNumber;
                     }));
+
+                    htmlTextBox.Invoke((Action)(() =>
+                    {
+                        htmlTextBox.Text = favPage;
+                        htmlTextBox.Select(0, magicNumber.Length);
+                    }));
                 }
-                catch
-                {
-                    // TODO
-                }
+                catch { }
+
+                loadDoujin();
 
                 // create folder
-                path = pathButton.Text + "\\" + magicNumber;
+                path = pathButton.Text + "\\" + doujinTitle;
                 if (!Directory.Exists(path))
                 {
-                    Directory.CreateDirectory(path);
+                    try
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    catch (System.ArgumentException)
+                    {
+                        try
+                        {
+                            foreach (string illegal in illegaCharacters)
+                            {
+                                doujinTitle = doujinTitle.Replace(illegal, string.Empty);
+                            }
+                            path = pathButton.Text + "\\" + doujinTitle;
+                            Directory.CreateDirectory(path);
+                        }
+                        catch
+                        {
+                            using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                            {
+                                sw.WriteLine(magicNumber);
+                            }
+                            break;
+                        }
+                    }
                 }
 
-                // load page
-                load();
                 downloadDoujin();
 
             }
@@ -345,15 +308,20 @@ namespace Doujin
             pathButton.Text = folderSelectDialog.FileName;
         }
 
-        private void startTextBox_TextChanged(object sender, EventArgs e)
+        private bool init = true;
+        private void htmlTextBox_MouseDown(object sender, MouseEventArgs e)
         {
-            pageLabel.Text = "now at page " + startTextBox.Text;
+            if (init)
+            {
+                htmlTextBox.SelectAll();
+                init = false;
+            }
         }
 
-        private void numOnly_KeyPress(object sender, KeyPressEventArgs e)
+        private void skipButton_Click(object sender, EventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-                e.Handled = true;
+            cts.Cancel();
+            skipButton.Enabled = false;
         }
     }
 }
