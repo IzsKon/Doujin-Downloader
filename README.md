@@ -21,7 +21,7 @@ This version of Doujin Downloader is for donwloading all the doujins from a page
 - Can only download one page at a time
 
 - If there occurs any problem when downloading any doujin, this downloader will pass it, 
-and save the doujin 6 digit and page in "error" in the path you selected in the begining.
+and save the doujin 6 digit number and page in "error" in the path you selected in the begining.
 
 - 1 page requires about 500MB. 
 The code will not check if your disk space is enough.
