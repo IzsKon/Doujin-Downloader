@@ -179,6 +179,7 @@ namespace Doujin
             mainTask.Start();
             await mainTask; // asynchronouly wait page to load
 
+            MessageBox.Show("Donwload Complete", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
         }
 
         private void downloadDoujin()
