@@ -146,8 +146,6 @@
             this.htmlTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.htmlTextBox.Size = new System.Drawing.Size(612, 470);
             this.htmlTextBox.TabIndex = 9;
-            this.htmlTextBox.Text = "please copy the page html here";
-            this.htmlTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.htmlTextBox_MouseDown);
             // 
             // pathButton
             // 
@@ -167,9 +165,9 @@
             this.htmlLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.htmlLabel.Location = new System.Drawing.Point(353, 88);
             this.htmlLabel.Name = "htmlLabel";
-            this.htmlLabel.Size = new System.Drawing.Size(54, 25);
+            this.htmlLabel.Size = new System.Drawing.Size(347, 25);
             this.htmlLabel.TabIndex = 12;
-            this.htmlLabel.Text = "html";
+            this.htmlLabel.Text = "copy the web page source code here:";
             // 
             // skipButton
             // 

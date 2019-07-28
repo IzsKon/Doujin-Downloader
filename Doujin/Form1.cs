@@ -308,16 +308,6 @@ namespace Doujin
             pathButton.Text = folderSelectDialog.FileName;
         }
 
-        private bool init = true;
-        private void htmlTextBox_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (init)
-            {
-                htmlTextBox.SelectAll();
-                init = false;
-            }
-        }
-
         private void skipButton_Click(object sender, EventArgs e)
         {
             cts.Cancel();
