@@ -1,24 +1,24 @@
-# Doujin-Downloader
+# Doujin Downloader fav edition
 
-This version is for donwloading all the doujins from nhentai.net.
-
-More specifically, all the doujins that includes the tag "lolicon".
-
+This version of Doujin Downloader is for donwloading all the doujins from a page of your favorite list in nhentai.net.
 
 ## How to use
 
-It will go through every page in https://nhentai.net/tag/lolicon/, and download every doujin in the page.
+1. Select path, doujins will be saved there.
 
-Select path, doujins will be saved there.
+2. Go to the page of your favorite list you want to donwload.
 
-Enter which page you want to start download in the "start page", and the page you want to stop in the "end page".
+3. Get the web page source code. (Ctrl + U)
 
-(ex: start page = 1, end page = 100, then it will start download from https://nhentai.net/tag/lolicon/?page=1 to page=100)
+4. Copy the source code. (Ctrl + A, Ctrl + C)
 
-The doujin information will be stored in "info" in the same folder with the doujin.
+5. Paste it in the "sorce code textbox".
 
+6. Press "Download" to start download. Press "skip" to skip the donwloading doujin and start donwloading the next one.
 
 ## Notices
+
+- Can only download one page at a time
 
 - If there occurs any problem when downloading any doujin, this downloader will pass it, 
 and save the doujin 6 digit and page in "error" in the path you selected in the begining.
