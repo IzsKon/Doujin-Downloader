@@ -215,18 +215,30 @@ namespace Doujin
                         dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
                     }));
                 }
-				catch (WebException)
+				catch
 				{
-					var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
-						"Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    try // the image may be png
+                    {
+                        mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".png",
+                            dt.path + "\\" + page.ToString() + ".png");
+                        dt.taskUI.Invoke((Action)(() =>
+                        {
+                            dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
+                        }));
+                    }
+                    catch
+                    {
+                        var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
+                            "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
 
-					// retry?
-					if (result == DialogResult.Retry)
-					{
-						--page;
-						continue;
-					}
-					else return;
+                        // retry?
+                        if (result == DialogResult.Retry)
+                        {
+                            --page;
+                            continue;
+                        }
+                        else return;
+                    }
 				}
 			}
 
