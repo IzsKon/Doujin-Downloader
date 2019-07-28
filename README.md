@@ -2,11 +2,13 @@
 
 This version of Doujin Downloader is for donwloading all the doujins from a page of your favorite list in nhentai.net.
 
+Actually, you can download any page in nhentai.net with this.
+
 ## How to use
 
 1. Select path, doujins will be saved there.
 
-2. Go to the page of your favorite list you want to donwload.
+2. Go to the page you want to donwload.
 
 3. Get the web page source code. (Ctrl + U)
 
