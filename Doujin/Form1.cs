@@ -103,6 +103,7 @@ namespace Doujin
                         titleLength = doujinPage.IndexOf("</h1>") - titleStart;
                         doujinTitle = doujinPage.Substring(titleStart, titleLength);
                     }
+                    doujinTitle = doujinTitle.Replace("&#39;", "'");  
 					doujinTitleLabel.Text = doujinTitle;
                     //
 					// doujin length
@@ -191,9 +192,17 @@ namespace Doujin
                 return;
             }
 
-            // find the image galleries number
-            imageNum = imageNum.Substring(imageNum.IndexOf("<img src=\"https://i.nhentai.net/galleries/") + "<img src=\"https://i.nhentai.net/galleries/".Length);
-            imageNum = imageNum.Substring(0, imageNum.IndexOf("1.jpg"));
+            try
+            {
+                // find the image galleries number
+                imageNum = imageNum.Substring(imageNum.IndexOf("<img src=\"https://i.nhentai.net/galleries/") + "<img src=\"https://i.nhentai.net/galleries/".Length);
+                imageNum = imageNum.Substring(0, imageNum.IndexOf("/"));
+            }
+            catch
+            {
+                MessageBox.Show("We have problem downloading " + dt.magicNum, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dt.cts.Cancel();
+            }
 
             WebClient mywebclient = new WebClient();
             for (int page = 1; page <= dt.doujinLen; page++)
@@ -208,8 +217,7 @@ namespace Doujin
 				try
 				{
                     mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".jpg", 
-                        dt.path + "\\" + page.ToString() + ".jpg");
-                    
+                        dt.path + "\\" + page.ToString() + ".jpg");    
                     dt.taskUI.Invoke((Action)(() =>
                     {
                         dt.taskUI.setProgress(page.ToString() + "/" + dt.doujinLen.ToString());
@@ -237,7 +245,7 @@ namespace Doujin
                             --page;
                             continue;
                         }
-                        else return;
+                        else dt.cts.Cancel();
                     }
 				}
 			}
