@@ -107,6 +107,7 @@ namespace Doujin
                         titleLength = doujinPage.IndexOf("</h1>") - titleStart;
                         doujinTitle = doujinPage.Substring(titleStart, titleLength);
                     }
+                    doujinTitle = doujinTitle.Replace("&#39;", "'");
                     doujinTitleLabel.Text = doujinTitle;
                     //
                     // doujin length
