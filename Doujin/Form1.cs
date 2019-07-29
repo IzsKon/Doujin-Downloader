@@ -156,6 +156,8 @@ namespace Doujin
             await mainTask; // asynchronouly wait page to load
 
             MessageBox.Show("Donwload Complete", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            downloadButton.Enabled = true;
+            pathButton.Enabled = true;
             htmlTextBox.ReadOnly = false;
         }
 

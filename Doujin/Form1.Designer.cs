@@ -139,6 +139,8 @@
             // 
             // htmlTextBox
             // 
+            this.htmlTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.htmlTextBox.ForeColor = System.Drawing.Color.LightGreen;
             this.htmlTextBox.ImeMode = System.Windows.Forms.ImeMode.Alpha;
             this.htmlTextBox.Location = new System.Drawing.Point(358, 116);
             this.htmlTextBox.Multiline = true;
