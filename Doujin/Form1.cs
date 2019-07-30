@@ -373,7 +373,7 @@ namespace Doujin
         private void delayTrackBar_Scroll(object sender, EventArgs e)
         {
             delay = delayTrackBar.Value;
-            delayLabel.Text = "Download Delay: " + delay.ToString();
+            delayLabel.Text = "Download Delay: " + delay.ToString() + " (ms)";
         }
     }
 }

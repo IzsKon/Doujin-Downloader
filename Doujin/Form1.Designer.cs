@@ -237,9 +237,9 @@
             this.delayLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.delayLabel.Location = new System.Drawing.Point(374, 318);
             this.delayLabel.Name = "delayLabel";
-            this.delayLabel.Size = new System.Drawing.Size(131, 15);
+            this.delayLabel.Size = new System.Drawing.Size(161, 15);
             this.delayLabel.TabIndex = 17;
-            this.delayLabel.Text = "Download Delay: 300";
+            this.delayLabel.Text = "Download Delay: 300 (ms)";
             // 
             // minDelayLabel
             // 
