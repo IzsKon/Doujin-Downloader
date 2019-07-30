@@ -20,7 +20,6 @@ namespace Doujin
         private Image doujinCover;
 		private string doujinTitle = "";
 		private int doujinLen = 0;
-		private bool selected = false;
 
 		public class DownloadTask
 		{
@@ -40,33 +39,32 @@ namespace Doujin
 			magicNumTextBox.Focus();
         }
 
-		private async void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
-		{
-			if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-				e.Handled = true;
-			if (e.KeyChar == (char)13)
-			{
-				selected = true;
-				magicNumTextBox.SelectAll();
-
-                // set up task
-                var mainTask = new Task(() =>
-				{
-                    load();
-                });
-				mainTask.Start();
-                await mainTask; // asynchronouly wait page to load
+        private void magicNumber_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+            if (e.KeyChar == (char)13)
+            {
+                searchButton_Click(sender, e);
             }
         }
 
-		private void magicNumber_MouseDown(object sender, MouseEventArgs e)
-		{
-			if (!selected) magicNumTextBox.SelectAll();
-			else magicNumTextBox.DeselectAll();
-			selected = !selected;
-		}
+        private async void searchButton_Click(object sender, EventArgs e)
+        {
+            searchButton.Enabled = false;
 
-		public void load()
+            // set up task
+            var mainTask = new Task(() =>
+            {
+                load();
+            });
+            mainTask.Start();
+            await mainTask; // asynchronouly wait page to load
+
+            searchButton.Enabled = true;
+        }
+
+        public void load()
 		{
             // get doujin
             WebRequest doujinPageRequest;
@@ -115,10 +113,11 @@ namespace Doujin
                     }
                     doujinTitle = doujinTitle.Replace("&#39;", "'");  
 					doujinTitleLabel.Text = doujinTitle;
+                    titleToolTip.SetToolTip(doujinTitleLabel, doujinTitle);
                     //
-					// doujin length
+                    // doujin length
                     //
-					int lengthStart = doujinPage.IndexOf("<div>") + "<div>".Length;
+                    int lengthStart = doujinPage.IndexOf("<div>") + "<div>".Length;
 					int lengthLength = doujinPage.IndexOf(" pages</div>") - lengthStart;
 					doujinLen = int.Parse(doujinPage.Substring(lengthStart, lengthLength));
 					doujinLenLabel.Text = doujinLen.ToString() + " pages";
@@ -324,8 +323,8 @@ namespace Doujin
 
 			// task ui
 			TaskUI taskui = new TaskUI();
-			Point bar = new Point(270, 25 + 25 * downloadTaskManager.Count);
-			taskui.shift(new Point(bar.X, bar.Y + 25), bar);
+			Point bar = new Point(270, 25 + 35 * downloadTaskManager.Count);
+			taskui.shift(new Point(bar.X, bar.Y + 38), bar);
 			taskui.setTitle(doujinTitle);
 			taskui.setCancelEvent((sen, eve) =>
 			{
@@ -353,5 +352,6 @@ namespace Doujin
             }
             catch { return false; }
         }
+
     }
 }
