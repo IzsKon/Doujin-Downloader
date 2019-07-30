@@ -55,7 +55,6 @@
             this.magicNumTextBox.ReadOnly = true;
             this.magicNumTextBox.Size = new System.Drawing.Size(315, 40);
             this.magicNumTextBox.TabIndex = 0;
-            this.magicNumTextBox.Text = "123";
             this.magicNumTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.magicNumber_KeyPress);
             this.magicNumTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.magicNumber_MouseDown);
             // 
