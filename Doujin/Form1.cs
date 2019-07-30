@@ -80,9 +80,19 @@ namespace Doujin
 			}
 			catch
 			{
-				MessageBox.Show(
-					"Cannot find page.\nPlease check your Internet connection and make sure the number you enter is valid.",
-					"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // check if Internet connection is noraml
+                if (!hasInternet())
+                {
+                    MessageBox.Show(
+                    "Cannot find page.\nPlease check your Internet connection",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show(
+                    "Cannot find page.\nPlease make sure the number you enter is valid.",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 				return;
 			}
 
@@ -236,21 +246,8 @@ namespace Doujin
                     }
                     catch
                     {
-                        try //check internet connection
-                        {
-                            using (var client = new WebClient())
-                            using (client.OpenRead("http://clients3.google.com/generate_204")) { }
-
-                            // if connection is working
-                            var result = MessageBox.Show(
-                                "We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
-                                "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-                            // retry?
-                            if (result == DialogResult.Retry) --page;
-                            else dt.cts.Cancel();
-                        }
-                        catch
+                        // if connection is not working
+                        if (!hasInternet())
                         {
                             dt.taskUI.Invoke((Action)(() =>
                             {
@@ -259,16 +256,30 @@ namespace Doujin
                             --page;
                             continue;
                         }
+                        else
+                        {
+                            var result = MessageBox.Show(
+                                "We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
+                                "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                            // retry?
+                            if (result == DialogResult.Retry) --page;
+                            else dt.cts.Cancel();
+                        }
                     }
 				}
                 #endregion
             }
 
             // remove completed task
-            this.Invoke((Action)(() =>
-			{
-				this.Controls.Remove(dt.taskUI);
-			}));
+            try
+            {
+                this.Invoke((Action)(() =>
+                {
+                    this.Controls.Remove(dt.taskUI);
+                }));
+            }
+            catch (InvalidOperationException) { }
 			downloadTaskManager.RemoveFirst();
 
 			// move all download tasks above
@@ -282,7 +293,7 @@ namespace Doujin
 						temp.shift(temp.Location, new Point(270, 25 + 25 * i));
 					}));
 				}
-				catch { };
+                catch (InvalidOperationException) { };
 			}
 
 			// download next doujin
@@ -327,5 +338,20 @@ namespace Doujin
 
 			return dt;
 		}
+
+        /// <summary>
+        /// return whether the Internet connection is normal or not
+        /// </summary>
+        /// <returns></returns>
+        private bool hasInternet()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                using (client.OpenRead("http://clients3.google.com/generate_204"))
+                { return true; }
+            }
+            catch { return false; }
+        }
     }
 }
