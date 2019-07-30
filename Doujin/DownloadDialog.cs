@@ -15,7 +15,7 @@ namespace Doujin
     public partial class DownloadDialog : Form
     {
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
-        static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
+        static public string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         public string path { get; set; }
         public string title { get; set; }
 
@@ -24,10 +24,7 @@ namespace Doujin
             InitializeComponent();
 
             folderSelectDialog.IsFolderPicker = true;
-            foreach (string illegal in illegaCharacters)
-            {
-                title = title.Replace(illegal, string.Empty);
-            }
+            title = removeIllegal(title);
             titleTextBox.Text = title;
 
             string filename = "";
@@ -111,6 +108,25 @@ namespace Doujin
                     e.Handled = true;
                 }
             }
+        }
+
+        /// <summary>
+        /// turn the illgal characters of folder from halfwitdh to fullwidth
+        /// </summary>
+        /// <param name="oldstr"></param>
+        /// <returns></returns>
+        static public string removeIllegal(string oldstr)
+        {
+            string newstr = oldstr;
+            newstr = newstr.Replace('*', '＊');
+            newstr = newstr.Replace('\\', '＼');
+            newstr = newstr.Replace(':', '：');
+            newstr = newstr.Replace('\"', '＂');
+            newstr = newstr.Replace('<', '＜');
+            newstr = newstr.Replace('>', '＞');
+            newstr = newstr.Replace('?', '？');
+            newstr = newstr.Replace('/', '／');
+            return newstr;
         }
 
     }

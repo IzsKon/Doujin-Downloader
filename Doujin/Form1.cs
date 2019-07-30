@@ -211,10 +211,10 @@ namespace Doujin
 				if (dt.cts.IsCancellationRequested) break;
 
 				//download delay. DO NOT REMOVE!!
-				Thread.Sleep(ran.Next(400, 600));
+				Thread.Sleep(ran.Next(300, 400));
 
-				// download image
-				try
+                #region download image
+                try
 				{
                     mywebclient.DownloadFile(@"https://i.nhentai.net/galleries/" + imageNum + "/" + page.ToString() + ".jpg", 
                         dt.path + "\\" + page.ToString() + ".jpg");    
@@ -236,22 +236,36 @@ namespace Doujin
                     }
                     catch
                     {
-                        var result = MessageBox.Show("We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
-                            "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
-
-                        // retry?
-                        if (result == DialogResult.Retry)
+                        try //check internet connection
                         {
+                            using (var client = new WebClient())
+                            using (client.OpenRead("http://clients3.google.com/generate_204")) { }
+
+                            // if connection is working
+                            var result = MessageBox.Show(
+                                "We have problem downloading " + dt.magicNum + ", page" + page.ToString(),
+                                "Error", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+
+                            // retry?
+                            if (result == DialogResult.Retry) --page;
+                            else dt.cts.Cancel();
+                        }
+                        catch
+                        {
+                            dt.taskUI.Invoke((Action)(() =>
+                            {
+                                dt.taskUI.setProgress("waiting");
+                            }));
                             --page;
                             continue;
                         }
-                        else dt.cts.Cancel();
                     }
 				}
-			}
+                #endregion
+            }
 
             // remove completed task
-			this.Invoke((Action)(() =>
+            this.Invoke((Action)(() =>
 			{
 				this.Controls.Remove(dt.taskUI);
 			}));
