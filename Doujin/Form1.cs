@@ -23,7 +23,6 @@ namespace Doujin
         private int doujinLen = 0;
         private string path = "";
         private CancellationTokenSource cts = new CancellationTokenSource();
-        static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
 
         public class DownloadTask
@@ -145,9 +144,7 @@ namespace Doujin
 
         private async void downloadButton_Click(object sender, EventArgs e)
         {
-            downloadButton.Enabled = false;
-            pathButton.Enabled = false;
-            htmlTextBox.ReadOnly = true;
+            setDownloadStatus(true);
 
             var mainTask = new Task(() =>
             {
@@ -157,9 +154,7 @@ namespace Doujin
             await mainTask; // asynchronouly wait page to load
 
             MessageBox.Show("Donwload Complete", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            downloadButton.Enabled = true;
-            pathButton.Enabled = true;
-            htmlTextBox.ReadOnly = false;
+            setDownloadStatus(false);
         }
 
         private void downloadDoujin()
@@ -178,8 +173,10 @@ namespace Doujin
             }
             catch (WebException)
             {
-                MessageBox.Show("We have problem downloading " + magicNumber,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                {
+                    sw.WriteLine(magicNumber);
+                }
                 return;
             }
 
@@ -206,8 +203,9 @@ namespace Doujin
                 }
 
                 //download delay. DO NOT REMOVE!!
-                Thread.Sleep(ran.Next(400, 500));
+                Thread.Sleep(ran.Next(300, 400));
 
+                #region download image
                 // download image
                 try
                 {
@@ -223,14 +221,26 @@ namespace Doujin
                     }
                     catch (WebException)
                     {
-                        using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                        try //check internet connection
                         {
-                            sw.WriteLine(magicNumber + ", " + page.ToString());
-                        }
-                        break;
-                    }
+                            using (var client = new WebClient())
+                            using (client.OpenRead("http://clients3.google.com/generate_204")) { }
 
+                            // if connection is working
+                            using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                            {
+                                sw.WriteLine(magicNumber + ", " + page.ToString());
+                            }
+                            break;
+                        }
+                        catch
+                        {
+                            --page;
+                            continue;
+                        }
+                    }
                 }
+                #endregion
 
                 try
                 {
@@ -240,7 +250,6 @@ namespace Doujin
                     }));
                 }
                 catch { }
-                
             }
         }
 
@@ -270,7 +279,7 @@ namespace Doujin
                 loadDoujin();
 
                 // create folder
-                path = pathButton.Text + "\\" + doujinTitle;
+                path = pathButton.Text + "\\" + removeIllegal(doujinTitle);
                 if (!Directory.Exists(path))
                 {
                     try
@@ -279,23 +288,11 @@ namespace Doujin
                     }
                     catch (System.ArgumentException)
                     {
-                        try
+                        using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
                         {
-                            foreach (string illegal in illegaCharacters)
-                            {
-                                doujinTitle = doujinTitle.Replace(illegal, string.Empty);
-                            }
-                            path = pathButton.Text + "\\" + doujinTitle;
-                            Directory.CreateDirectory(path);
+                            sw.WriteLine(magicNumber);
                         }
-                        catch
-                        {
-                            using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
-                            {
-                                sw.WriteLine(magicNumber);
-                            }
-                            break;
-                        }
+                        break;
                     }
                 }
 
@@ -315,6 +312,28 @@ namespace Doujin
         {
             cts.Cancel();
             skipButton.Enabled = false;
+        }
+
+        static public string removeIllegal(string oldstr)
+        {
+            string newstr = oldstr;
+            newstr = newstr.Replace('*', '＊');
+            newstr = newstr.Replace('\\', '＼');
+            newstr = newstr.Replace(':', '：');
+            newstr = newstr.Replace('\"', '＂');
+            newstr = newstr.Replace('<', '＜');
+            newstr = newstr.Replace('>', '＞');
+            newstr = newstr.Replace('?', '？');
+            newstr = newstr.Replace('/', '／');
+            return newstr;
+        }
+
+        private void setDownloadStatus(bool status)
+        {
+            downloadButton.Enabled = !status;
+            pathButton.Enabled = !status;
+            htmlTextBox.ReadOnly = status;
+            skipButton.Enabled = status;
         }
     }
 }

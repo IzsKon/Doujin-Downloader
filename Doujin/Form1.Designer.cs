@@ -55,6 +55,7 @@
             this.magicNumTextBox.ReadOnly = true;
             this.magicNumTextBox.Size = new System.Drawing.Size(315, 40);
             this.magicNumTextBox.TabIndex = 0;
+            this.magicNumTextBox.Text = "123";
             this.magicNumTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.magicNumber_KeyPress);
             this.magicNumTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.magicNumber_MouseDown);
             // 
@@ -68,7 +69,7 @@
             this.doujinCoverPic.Location = new System.Drawing.Point(0, 0);
             this.doujinCoverPic.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.doujinCoverPic.Name = "doujinCoverPic";
-            this.doujinCoverPic.Size = new System.Drawing.Size(313, 343);
+            this.doujinCoverPic.Size = new System.Drawing.Size(313, 388);
             this.doujinCoverPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.doujinCoverPic.TabIndex = 3;
             this.doujinCoverPic.TabStop = false;
@@ -82,10 +83,10 @@
             this.doujinTitleLabel.BackColor = System.Drawing.Color.Transparent;
             this.doujinTitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.doujinTitleLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.doujinTitleLabel.Location = new System.Drawing.Point(2, 342);
+            this.doujinTitleLabel.Location = new System.Drawing.Point(0, 392);
             this.doujinTitleLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.doujinTitleLabel.Name = "doujinTitleLabel";
-            this.doujinTitleLabel.Size = new System.Drawing.Size(313, 123);
+            this.doujinTitleLabel.Size = new System.Drawing.Size(313, 140);
             this.doujinTitleLabel.TabIndex = 4;
             // 
             // downloadButton
@@ -97,7 +98,7 @@
             this.downloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.downloadButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.downloadButton.Location = new System.Drawing.Point(164, 469);
+            this.downloadButton.Location = new System.Drawing.Point(743, 605);
             this.downloadButton.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(151, 40);
@@ -112,7 +113,7 @@
             this.doujinLenLabel.BackColor = System.Drawing.Color.Transparent;
             this.doujinLenLabel.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.doujinLenLabel.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.doujinLenLabel.Location = new System.Drawing.Point(4, 481);
+            this.doujinLenLabel.Location = new System.Drawing.Point(2, 532);
             this.doujinLenLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.doujinLenLabel.Name = "doujinLenLabel";
             this.doujinLenLabel.Size = new System.Drawing.Size(156, 27);
@@ -120,21 +121,19 @@
             // 
             // doujinInfoPanel
             // 
-            this.doujinInfoPanel.Controls.Add(this.progressBar);
             this.doujinInfoPanel.Controls.Add(this.doujinCoverPic);
             this.doujinInfoPanel.Controls.Add(this.doujinLenLabel);
-            this.doujinInfoPanel.Controls.Add(this.downloadButton);
             this.doujinInfoPanel.Controls.Add(this.doujinTitleLabel);
-            this.doujinInfoPanel.Location = new System.Drawing.Point(13, 60);
+            this.doujinInfoPanel.Location = new System.Drawing.Point(13, 68);
             this.doujinInfoPanel.Name = "doujinInfoPanel";
-            this.doujinInfoPanel.Size = new System.Drawing.Size(315, 532);
+            this.doujinInfoPanel.Size = new System.Drawing.Size(315, 577);
             this.doujinInfoPanel.TabIndex = 7;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(2, 516);
+            this.progressBar.Location = new System.Drawing.Point(13, 54);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(313, 10);
+            this.progressBar.Size = new System.Drawing.Size(314, 10);
             this.progressBar.TabIndex = 7;
             // 
             // htmlTextBox
@@ -142,18 +141,18 @@
             this.htmlTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.htmlTextBox.ForeColor = System.Drawing.Color.LightGreen;
             this.htmlTextBox.ImeMode = System.Windows.Forms.ImeMode.Alpha;
-            this.htmlTextBox.Location = new System.Drawing.Point(358, 116);
+            this.htmlTextBox.Location = new System.Drawing.Point(358, 84);
             this.htmlTextBox.Multiline = true;
             this.htmlTextBox.Name = "htmlTextBox";
             this.htmlTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.htmlTextBox.Size = new System.Drawing.Size(612, 470);
+            this.htmlTextBox.Size = new System.Drawing.Size(537, 508);
             this.htmlTextBox.TabIndex = 9;
             // 
             // pathButton
             // 
             this.pathButton.Location = new System.Drawing.Point(358, 13);
             this.pathButton.Name = "pathButton";
-            this.pathButton.Size = new System.Drawing.Size(588, 40);
+            this.pathButton.Size = new System.Drawing.Size(537, 40);
             this.pathButton.TabIndex = 11;
             this.pathButton.Text = "C:\\\\";
             this.pathButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -165,7 +164,7 @@
             this.htmlLabel.AutoSize = true;
             this.htmlLabel.Font = new System.Drawing.Font("Adobe Heiti Std R", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.htmlLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.htmlLabel.Location = new System.Drawing.Point(353, 88);
+            this.htmlLabel.Location = new System.Drawing.Point(353, 56);
             this.htmlLabel.Name = "htmlLabel";
             this.htmlLabel.Size = new System.Drawing.Size(347, 25);
             this.htmlLabel.TabIndex = 12;
@@ -176,11 +175,12 @@
             this.skipButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.skipButton.BackColor = System.Drawing.Color.DodgerBlue;
             this.skipButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.skipButton.Enabled = false;
             this.skipButton.FlatAppearance.BorderSize = 0;
             this.skipButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.skipButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.skipButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.skipButton.Location = new System.Drawing.Point(873, 69);
+            this.skipButton.Location = new System.Drawing.Point(633, 605);
             this.skipButton.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
             this.skipButton.Name = "skipButton";
             this.skipButton.Size = new System.Drawing.Size(97, 40);
@@ -195,12 +195,14 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(982, 598);
+            this.ClientSize = new System.Drawing.Size(905, 658);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.skipButton);
             this.Controls.Add(this.htmlLabel);
             this.Controls.Add(this.pathButton);
             this.Controls.Add(this.htmlTextBox);
             this.Controls.Add(this.doujinInfoPanel);
+            this.Controls.Add(this.downloadButton);
             this.Controls.Add(this.magicNumTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
