@@ -23,7 +23,7 @@ namespace Doujin
         private int doujinLen = 0;
         private string path = "";
         private bool selected = false;
-        static private string[] illegaCharacters = { "*", "|", "\\", ":", "\"", "<", ">", "?", "/" };
+        private int delay = 300;
         static private CommonOpenFileDialog folderSelectDialog = new CommonOpenFileDialog();
 
         public class DownloadTask
@@ -198,8 +198,10 @@ namespace Doujin
             }
             catch (WebException)
             {
-                MessageBox.Show("We have problem downloading " + magicNumber,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                {
+                    sw.WriteLine(magicNumber);
+                }
                 return;
             }
 
@@ -211,7 +213,7 @@ namespace Doujin
             for (int page = 1; page <= doujinLen; page++)
             {
                 //download delay. DO NOT REMOVE!!
-                Thread.Sleep(ran.Next(500, 700));
+                Thread.Sleep(ran.Next(delay, delay + 100));
 
                 // download image
                 try
@@ -228,11 +230,23 @@ namespace Doujin
                     }
                     catch (WebException)
                     {
-                        using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                        try //check internet connection
                         {
-                            sw.WriteLine(magicNumber + ", " + page.ToString());
+                            using (var client = new WebClient())
+                            using (client.OpenRead("http://clients3.google.com/generate_204")) { }
+
+                            // if connection is working
+                            using (StreamWriter sw = File.AppendText(pathButton.Text + "\\error"))
+                            {
+                                sw.WriteLine(magicNumber + ", " + page.ToString());
+                            }
+                            break;
                         }
-                        break;
+                        catch
+                        {
+                            --page;
+                            continue;
+                        }
                     }
 
                 }
@@ -354,6 +368,12 @@ namespace Doujin
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
                 e.Handled = true;
+        }
+
+        private void delayTrackBar_Scroll(object sender, EventArgs e)
+        {
+            delay = delayTrackBar.Value;
+            delayLabel.Text = "Download Delay: " + delay.ToString();
         }
     }
 }

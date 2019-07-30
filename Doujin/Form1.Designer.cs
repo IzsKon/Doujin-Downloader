@@ -43,8 +43,13 @@
             this.endLabel = new System.Windows.Forms.Label();
             this.pathLabel = new System.Windows.Forms.Label();
             this.pageLabel = new System.Windows.Forms.Label();
+            this.delayTrackBar = new System.Windows.Forms.TrackBar();
+            this.delayLabel = new System.Windows.Forms.Label();
+            this.minDelayLabel = new System.Windows.Forms.Label();
+            this.maxDelayLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.doujinInfoPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.delayTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // magicNumTextBox
@@ -212,6 +217,50 @@
             this.pageLabel.TabIndex = 15;
             this.pageLabel.Text = "now at page 1 ";
             // 
+            // delayTrackBar
+            // 
+            this.delayTrackBar.LargeChange = 50;
+            this.delayTrackBar.Location = new System.Drawing.Point(361, 347);
+            this.delayTrackBar.Maximum = 500;
+            this.delayTrackBar.Minimum = 50;
+            this.delayTrackBar.Name = "delayTrackBar";
+            this.delayTrackBar.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.delayTrackBar.Size = new System.Drawing.Size(299, 56);
+            this.delayTrackBar.TabIndex = 16;
+            this.delayTrackBar.Tag = "";
+            this.delayTrackBar.Value = 300;
+            this.delayTrackBar.Scroll += new System.EventHandler(this.delayTrackBar_Scroll);
+            // 
+            // delayLabel
+            // 
+            this.delayLabel.AutoSize = true;
+            this.delayLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.delayLabel.Location = new System.Drawing.Point(374, 318);
+            this.delayLabel.Name = "delayLabel";
+            this.delayLabel.Size = new System.Drawing.Size(131, 15);
+            this.delayLabel.TabIndex = 17;
+            this.delayLabel.Text = "Download Delay: 300";
+            // 
+            // minDelayLabel
+            // 
+            this.minDelayLabel.AutoSize = true;
+            this.minDelayLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.minDelayLabel.Location = new System.Drawing.Point(358, 388);
+            this.minDelayLabel.Name = "minDelayLabel";
+            this.minDelayLabel.Size = new System.Drawing.Size(21, 15);
+            this.minDelayLabel.TabIndex = 18;
+            this.minDelayLabel.Text = "50";
+            // 
+            // maxDelayLabel
+            // 
+            this.maxDelayLabel.AutoSize = true;
+            this.maxDelayLabel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.maxDelayLabel.Location = new System.Drawing.Point(614, 388);
+            this.maxDelayLabel.Name = "maxDelayLabel";
+            this.maxDelayLabel.Size = new System.Drawing.Size(28, 15);
+            this.maxDelayLabel.TabIndex = 19;
+            this.maxDelayLabel.Text = "500";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -219,6 +268,10 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(982, 598);
+            this.Controls.Add(this.maxDelayLabel);
+            this.Controls.Add(this.minDelayLabel);
+            this.Controls.Add(this.delayLabel);
+            this.Controls.Add(this.delayTrackBar);
             this.Controls.Add(this.pageLabel);
             this.Controls.Add(this.pathLabel);
             this.Controls.Add(this.endLabel);
@@ -236,6 +289,7 @@
             this.Text = "Doujin Downloader";
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).EndInit();
             this.doujinInfoPanel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.delayTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -257,6 +311,10 @@
         private System.Windows.Forms.Label pathLabel;
         private System.Windows.Forms.Label endLabel;
         private System.Windows.Forms.Label startLabel;
+        private System.Windows.Forms.TrackBar delayTrackBar;
+        private System.Windows.Forms.Label delayLabel;
+        private System.Windows.Forms.Label minDelayLabel;
+        private System.Windows.Forms.Label maxDelayLabel;
     }
 }
 
