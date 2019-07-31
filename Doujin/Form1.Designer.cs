@@ -35,10 +35,11 @@
             this.downloadButton = new System.Windows.Forms.Button();
             this.doujinLenLabel = new System.Windows.Forms.Label();
             this.doujinInfoPanel = new System.Windows.Forms.Panel();
+            this.doujinCoverPic = new System.Windows.Forms.PictureBox();
             this.magicNumToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.titleToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.searchButton = new System.Windows.Forms.Button();
-            this.doujinCoverPic = new System.Windows.Forms.PictureBox();
+            this.dtPanel = new System.Windows.Forms.Panel();
             this.doujinInfoPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.doujinCoverPic)).BeginInit();
             this.SuspendLayout();
@@ -111,6 +112,22 @@
             this.doujinInfoPanel.Size = new System.Drawing.Size(315, 514);
             this.doujinInfoPanel.TabIndex = 7;
             // 
+            // doujinCoverPic
+            // 
+            this.doujinCoverPic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.doujinCoverPic.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.doujinCoverPic.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.doujinCoverPic.Location = new System.Drawing.Point(0, 0);
+            this.doujinCoverPic.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
+            this.doujinCoverPic.Name = "doujinCoverPic";
+            this.doujinCoverPic.Size = new System.Drawing.Size(313, 336);
+            this.doujinCoverPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.doujinCoverPic.TabIndex = 3;
+            this.doujinCoverPic.TabStop = false;
+            this.doujinCoverPic.Tag = "";
+            // 
             // magicNumToolTip
             // 
             this.magicNumToolTip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
@@ -131,21 +148,13 @@
             this.searchButton.UseVisualStyleBackColor = false;
             this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
             // 
-            // doujinCoverPic
+            // dtPanel
             // 
-            this.doujinCoverPic.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.doujinCoverPic.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.doujinCoverPic.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.doujinCoverPic.Location = new System.Drawing.Point(0, 0);
-            this.doujinCoverPic.Margin = new System.Windows.Forms.Padding(2, 4, 2, 4);
-            this.doujinCoverPic.Name = "doujinCoverPic";
-            this.doujinCoverPic.Size = new System.Drawing.Size(313, 336);
-            this.doujinCoverPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.doujinCoverPic.TabIndex = 3;
-            this.doujinCoverPic.TabStop = false;
-            this.doujinCoverPic.Tag = "";
+            this.dtPanel.AutoScroll = true;
+            this.dtPanel.Location = new System.Drawing.Point(347, 13);
+            this.dtPanel.Name = "dtPanel";
+            this.dtPanel.Size = new System.Drawing.Size(674, 551);
+            this.dtPanel.TabIndex = 9;
             // 
             // Form1
             // 
@@ -154,6 +163,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(982, 576);
+            this.Controls.Add(this.dtPanel);
             this.Controls.Add(this.searchButton);
             this.Controls.Add(this.doujinInfoPanel);
             this.Controls.Add(this.magicNumTextBox);
@@ -182,6 +192,7 @@
         private System.Windows.Forms.ToolTip magicNumToolTip;
         private System.Windows.Forms.ToolTip titleToolTip;
         private System.Windows.Forms.Button searchButton;
+        private System.Windows.Forms.Panel dtPanel;
     }
 }
 

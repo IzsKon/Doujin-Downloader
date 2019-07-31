@@ -17,7 +17,6 @@ namespace Doujin
 {
 	public partial class Form1 : Form
 	{
-        private Image doujinCover;
 		private string doujinTitle = "";
 		private int doujinLen = 0;
 
@@ -129,8 +128,7 @@ namespace Doujin
 					doujinPageRequest = WebRequest.Create(doujinPage);
 					doujinPageRequest.Timeout = 10000;
 					doujinPageRequest.Method = "GET";
-                    doujinCover = Image.FromStream(doujinPageRequest.GetResponse().GetResponseStream());
-                    doujinCoverPic.Image = doujinCover;
+                    doujinCoverPic.Image = Image.FromStream(doujinPageRequest.GetResponse().GetResponseStream());
 
                     downloadButton.Enabled = true;
 				}
@@ -143,6 +141,12 @@ namespace Doujin
 				// This exception is inevitable but not a critical issue,
 				// just let the exception go, task will be canceled soon.
 			}
+            catch
+            {
+                MessageBox.Show("We have problem loading " + magicNumTextBox.Text,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
         }
 
         private async void downloadButton_Click(object sender, EventArgs e)
@@ -273,9 +277,9 @@ namespace Doujin
             // remove completed task
             try
             {
-                this.Invoke((Action)(() =>
+                dtPanel.Invoke((Action)(() =>
                 {
-                    this.Controls.Remove(dt.taskUI);
+                    dtPanel.Controls.Remove(dt.taskUI);
                 }));
             }
             catch (InvalidOperationException) { }
@@ -289,8 +293,8 @@ namespace Doujin
 				{
 					temp.Invoke((Action)(() =>
 					{
-						temp.shift(temp.Location, new Point(270, 25 + 25 * i));
-					}));
+                        temp.shift(new Point(0, 35 * i - dtPanel.VerticalScroll.Value));
+                    }));
 				}
                 catch (InvalidOperationException) { };
 			}
@@ -323,9 +327,10 @@ namespace Doujin
 
 			// task ui
 			TaskUI taskui = new TaskUI();
-			Point bar = new Point(270, 25 + 35 * downloadTaskManager.Count);
-			taskui.shift(new Point(bar.X, bar.Y + 38), bar);
-			taskui.setTitle(doujinTitle);
+            Point bar = new Point(0, 35 * downloadTaskManager.Count - dtPanel.VerticalScroll.Value);
+            taskui.Location = new Point(bar.X, bar.Y + 35);
+            taskui.shift(bar);
+            taskui.setTitle(doujinTitle);
 			taskui.setCancelEvent((sen, eve) =>
 			{
 				tokenSource.Cancel();
@@ -333,9 +338,9 @@ namespace Doujin
 				taskui.setProgressColor(Color.Gray);
 			});
 			dt.taskUI = taskui;
-			this.Controls.Add(taskui);
+            this.dtPanel.Controls.Add(taskui);
 
-			return dt;
+            return dt;
 		}
 
         /// <summary>

@@ -23,27 +23,32 @@ namespace Doujin
 			base.Dispose(disposing);
 		}
 
-		public void shift(System.Drawing.PointF from, System.Drawing.PointF to)
+		public void shift(System.Drawing.PointF newPos)
 		{
 			timer?.Dispose();
 			timer = new System.Windows.Forms.Timer();
 			timer.Interval = 20;
-			Location = new System.Drawing.Point((int)from.X, (int)from.Y);
+
 			System.Drawing.PointF position = this.Location;
-			timer.Tick += (sen, eve) =>
+            System.Drawing.PointF delta = new System.Drawing.PointF(newPos.X - this.Location.X, newPos.Y - this.Location.Y);
+            timer.Tick += (sen, eve) =>
 			{
-				float x = (to.X - position.X);
-				float y = (to.Y - position.Y);
-				position = new System.Drawing.PointF(position.X + x * 0.1f, position.Y + y * 0.1f);
-				Location = new System.Drawing.Point((int)position.X, (int)position.Y);
-				if (Math.Abs(x) < 0.1 && Math.Abs(y) < 0.1)
+                // (int)position.X is to cancel out floating point error
+                position.X += this.Location.X - (int)position.X + delta.X * 0.1f;
+                position.Y += this.Location.Y - (int)position.Y + delta.Y * 0.1f;
+
+                delta.X -= delta.X * 0.1f;
+                delta.Y -= delta.Y * 0.1f;
+
+                Location = new System.Drawing.Point((int)position.X, (int)position.Y);
+				if (Math.Abs(delta.X) < 0.1 && Math.Abs(delta.Y) < 0.1)
 				{
-					this.Location = new System.Drawing.Point((int)to.X, (int)to.Y);
+					this.Location = new System.Drawing.Point((int)(position.X + delta.X), (int)(position.Y + delta.Y));
 					timer.Stop();
 				}
 			};
-			timer.Start();
-		}
+			timer.Start();                    
+        }
 
 		public void setTitle(string title)
 		{
