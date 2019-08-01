@@ -224,7 +224,7 @@ namespace Doujin
 				if (dt.cts.IsCancellationRequested) break;
 
 				//download delay. DO NOT REMOVE!!
-				Thread.Sleep(ran.Next(300, 400));
+				Thread.Sleep(ran.Next(50, 100));
 
                 #region download image
                 try
